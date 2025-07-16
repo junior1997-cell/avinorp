@@ -140,7 +140,6 @@ if (!isset($_SESSION["user_nombre"])) {
                             <th style="border-top: 1px solid #f3f3f3 !important;">Stock</th>
                             <th style="border-top: 1px solid #f3f3f3 !important;">Compra</th>
                             <th style="border-top: 1px solid #f3f3f3 !important;">Venta</th>
-                            <th style="border-top: 1px solid #f3f3f3 !important;" class="text-nowrap" >Por Mayor</th>
                             <th style="border-top: 1px solid #f3f3f3 !important;">Descripción</th>
                             <th style="border-top: 1px solid #f3f3f3 !important;">Estado</th>
                             
@@ -163,7 +162,6 @@ if (!isset($_SESSION["user_nombre"])) {
                             <th>Stock</th>
                             <th>Precio Compra</th>
                             <th>Precio Venta</th>
-                            <th>Por Mayor</th>
                             <th>Descripción</th>
                             <th>Estado</th>
                             
@@ -788,7 +786,7 @@ if (!isset($_SESSION["user_nombre"])) {
                 <div class="modal-body">
                   <form name="formulario-ps" id="formulario-ps" method="POST" class="row needs-validation" novalidate>
                     <div class="row" id="cargando-20-fomulario">
-                      <input type="hidden" name="idproducto_ps" id="idproducto_ps">
+                      <input type="hidden" name="idproducto_sucursal_ps" id="idproducto_sucursal_ps">
                       <input type="hidden" name="idpresentacion" id="idpresentacion">
 
                       <div class="col-lg-12 col-xl-12 col-xxl-12">
@@ -822,6 +820,22 @@ if (!isset($_SESSION["user_nombre"])) {
                               <div class="form-label">
                                 <label for="nombre_presentacion" class="form-label">Nombre Presentacion</label>
                                 <input type="text" class="form-control" name="nombre_presentacion" id="nombre_presentacion"  />
+                              </div>
+                            </div>
+
+                            <!-- ------------- PRECIO PRESENTACION -------------- -->  
+                            <div class="col-md-6">
+                              <div class="form-label">
+                                <label for="Precio_presentacion_und" class="form-label">Precio por Unidad</label>
+                                <input type="text" class="form-control" name="precio_presentacion_und" id="precio_presentacion_und"  />
+                              </div>
+                            </div>
+
+                            <!-- ------------- PRECIO PRESENTACION X PRESENTACION-------------- -->  
+                            <div class="col-md-6">
+                              <div class="form-label">
+                                <label for="Precio_presentacion_total" class="form-label">Precio Total</label>
+                                <input type="text" class="form-control" name="precio_presentacion_total" id="precio_presentacion_total"  />
                               </div>
                             </div>
 

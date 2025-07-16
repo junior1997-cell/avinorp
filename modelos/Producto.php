@@ -24,7 +24,7 @@
       if (empty($ubicacion)){ } else { $filtro_ubicacion = "AND pcu.idproducto_categoria_ubicacion = '$ubicacion'"; }
 
       $sql= "SELECT p.idproducto, p.nombre, p.descripcion, p.codigo, p.codigo_alterno, cat.nombre AS categoria, mc.nombre AS marca,       
-      pp.unidad_presentacion,
+      pp.unidad_presentacion,pp.idproducto_sucursal,
       pcu.nombre AS ubicacion, ps.stock, ps.stock_minimo, ps.precio_compra, ps.precio_venta, ps.precio_por_mayor, p.estado, p.imagen
       FROM producto AS p
       INNER JOIN producto_sucursal AS ps ON ps.idproducto = p.idproducto 
@@ -52,17 +52,21 @@
         ('$categoria', '$marca', '$ubicacion', '$tipo', '$codigo_alterno', '$nombre', '$descripcion', '$img_producto');";
         $newdata = ejecutarConsulta_retornarID($sql_i, 'C');	if ($newdata['status'] == false) {  return $newdata; } $idproducto = $newdata['data'];
         
+
+        $sql_i3 = "INSERT INTO producto_sucursal ( idsucursal, idproducto, stock, stock_minimo, precio_compra, precio_venta, precio_por_mayor) VALUES 
+        ('$idsucursal', '$idproducto', '$stock', '$stock_min', '$precio_c', '$precio_v', '$precio_x_mayor');";
+        $newdata2 = ejecutarConsulta_retornarID($sql_i3, 'C');	if ($newdata2['status'] == false) {  return $newdata2; }
+
+        $idproducto_sucursal = $newdata2['data'];
+
         $sql_i1 = "SELECT * FROM sunat_c03_unidad_medida WHERE idsunat_c03_unidad_medida = '$u_medida'";
         $umedida = ejecutarConsultaSimpleFila($sql_i1); if ( $umedida['status'] == false ){ return $umedida; }
         $nombre_um = $umedida['data']['nombre'];
 
-        $sql_i2 = "INSERT INTO producto_presentacion (idproducto, idsunat_c03_unidad_medida, nombre, cantidad) VALUES 
-        ('$idproducto', '$u_medida', '$nombre_um', '$cant_um');";
+        $sql_i2 = "INSERT INTO producto_presentacion (idproducto_sucursal, idsunat_c03_unidad_medida, nombre, cantidad,precio_venta,precio_venta_total) VALUES 
+        ('$idproducto_sucursal', '$u_medida', '$nombre_um', '$cant_um','$precio_v','$precio_v');";
         $newdata1 = ejecutarConsulta_retornarID($sql_i2, 'C');	if ($newdata1['status'] == false) {  return $newdata1; }
 
-        $sql_i3 = "INSERT INTO producto_sucursal ( idsucursal, idproducto, stock, stock_minimo, precio_compra, precio_venta, precio_por_mayor) VALUES 
-        ('$idsucursal', '$idproducto', '$stock', '$stock_min', '$precio_c', '$precio_v', '$precio_x_mayor');";
-        $newdata2 = ejecutarConsulta($sql_i3, 'C');	if ($newdata2['status'] == false) {  return $newdata2; }
 
         $i = 0;
         $set_prod_new = "";
@@ -336,14 +340,14 @@
     }
 
     // ═══════════════════════════════  PRODUCTOS PRESENTACION  ══════════════════════════════════════
-    public function listar_presentacion($idproducto){
-      $sql = "SELECT * FROM producto WHERE idproducto = '$idproducto';";
+    public function listar_presentacion($idproducto_sucursal){
+      $sql = "SELECT ps.idproducto_sucursal,p.* FROM producto_sucursal as ps INNER JOIN producto as p on ps.idproducto = p.idproducto WHERE ps.idproducto_sucursal = '$idproducto_sucursal';";
       $producto = ejecutarConsultaSimpleFila($sql); if ($producto['status'] == false) { return $producto;}
 
       $sql_1 = "SELECT pp.* 
       FROM producto_presentacion as pp
       inner join producto_sucursal as ps on ps.idproducto_sucursal = pp.idproducto_sucursal
-      WHERE ps.idproducto = '$idproducto' AND estado = 1 AND estado_delete = 1 order by case when nombre = 'UNIDADES' THEN 0 ELSE 1 END ASC, nombre ASC ; ";
+      WHERE ps.idproducto_sucursal = '$idproducto_sucursal' AND estado = 1 AND estado_delete = 1 order by case when nombre = 'UNIDADES' THEN 0 ELSE 1 END ASC, nombre ASC ; ";
       $presentacion = ejecutarConsultaArray($sql_1); if ($presentacion['status'] == false) { return $presentacion;}
 
       return $datos = [
@@ -358,9 +362,9 @@
       return ejecutarConsultaSimpleFila($sql);
     }
 
-    public function insertar_presentacion($idproducto_ps, $umedida_ps, $cant_ps, $nombre_presentacion){
+    public function insertar_presentacion($idproducto_sucursal_ps, $umedida_ps, $cant_ps, $nombre_presentacion,$precio_presentacion_und,$precio_presentacion_total){
 
-      $sql_0 = "SELECT * FROM producto_presentacion WHERE idproducto = '$idproducto_ps' AND nombre = '$nombre_presentacion' and cantidad = '$cant_ps' ";
+      $sql_0 = "SELECT * FROM producto_presentacion WHERE idproducto_sucursal = '$idproducto_sucursal_ps' AND nombre = '$nombre_presentacion' and cantidad = '$cant_ps' ";
       $existe = ejecutarConsultaArray($sql_0); if ( $existe['status'] == false ) { return $existe; }
 
       if ( empty( $existe['data'] ) ){
@@ -369,8 +373,8 @@
         $umedida = ejecutarConsultaSimpleFila($sql_1); if ( $umedida['status'] == false ){ return $umedida; }
         $nombre_um = $umedida['data']['nombre'];
 
-        $sql_2 = "INSERT INTO producto_presentacion (idproducto, idsunat_c03_unidad_medida, nombre, cantidad) VALUES 
-        ('$idproducto_ps', '$umedida_ps', '$nombre_presentacion', '$cant_ps');";
+        $sql_2 = "INSERT INTO producto_presentacion (idproducto_sucursal, idsunat_c03_unidad_medida, nombre, cantidad,precio_venta,precio_venta_total) VALUES 
+        ('$idproducto_sucursal_ps', '$umedida_ps', '$nombre_presentacion', '$cant_ps','$precio_presentacion_und','$precio_presentacion_total');";
         $newdata = ejecutarConsulta($sql_2, 'C');	if ($newdata['status'] == false) {  return $newdata; }
         return $newdata;
 
@@ -390,14 +394,16 @@
       }
     }
 
-    public function editar_presentacion($idpresentacion, $idproducto_ps, $umedida_ps, $cant_ps, $nombre_presentacion){
+    public function editar_presentacion($idpresentacion, $idproducto_sucursal_ps, $umedida_ps, $cant_ps, $nombre_presentacion,$precio_presentacion_und,$precio_presentacion_total){
 
-      $sql_0 = "SELECT * FROM producto_presentacion WHERE idproducto = '$idproducto_ps' AND nombre = '$nombre_presentacion' and cantidad = '$cant_ps' AND idproducto_presentacion <> '$idpresentacion';";
+      $sql_0 = "SELECT * FROM producto_presentacion WHERE idproducto_sucursal = '$idproducto_sucursal_ps' AND nombre = '$nombre_presentacion' and cantidad = '$cant_ps' AND idproducto_presentacion <> '$idpresentacion';";
       $existe = ejecutarConsultaArray($sql_0); if ( $existe['status'] == false ) { return $existe; }
 
       if ( empty( $existe['data'] ) ){
 
-        $sql = "UPDATE producto_presentacion SET idsunat_c03_unidad_medida = '$umedida_ps', cantidad = '$cant_ps', nombre = '$nombre_presentacion' WHERE idproducto_presentacion = '$idpresentacion';";
+        $sql = "UPDATE producto_presentacion SET idsunat_c03_unidad_medida = '$umedida_ps', cantidad = '$cant_ps', nombre = '$nombre_presentacion',
+        precio_venta='$precio_presentacion_und',precio_venta_total='$precio_presentacion_total'
+        WHERE idproducto_presentacion = '$idpresentacion';";
         $newdata = ejecutarConsulta($sql, 'U');	if ($newdata['status'] == false) {  return $newdata; }
         return $newdata;
 

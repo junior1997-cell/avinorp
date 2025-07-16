@@ -186,7 +186,7 @@ function listar_tabla(filtro_categoria = '', filtro_unidad_medida = '', filtro_m
     "iDisplayLength": 10,
     "order": [[0, "asc"]],
     columnDefs:[
-      { targets: [11,12,13,14,15,16],  visible: false,  searchable: false,  },
+      { targets: [10,11,12,13,14,15],  visible: false,  searchable: false,  },
     ],
   }).DataTable();
 }
@@ -1039,22 +1039,26 @@ function limpiar_form_ps(){
   $('#um_presentacion').val('58').trigger('change'); // por defecto: NIU  
   $("#nombre_presentacion").val('UNIDADES');
   $("#cant_ps").val("");  
+  $("#precio_presentacion_und").val("");  
+  $("#precio_presentacion_total").val("");  
 
   $(".form-control").removeClass('is-valid');
   $(".form-control").removeClass('is-invalid');
   $(".error.invalid-feedback").remove();
 }
 
-function listar_presentacion(idproducto){
-  idproducto_ps_r = idproducto;
+function listar_presentacion(idproducto_sucursal){
+  idproducto_ps_r = idproducto_sucursal;
+  console.log('idproducto_sucursal : '+ idproducto_ps_r);
+  
   $("#modal-agregar-presentacion").modal('show');
   $("#tabla-presentaciones").html('');
 
-  $.post("../ajax/producto.php?op=listar_presentacion", { idproducto: idproducto }, function (e, status) {
+  $.post("../ajax/producto.php?op=listar_presentacion", { idproducto_sucursal: idproducto_sucursal }, function (e, status) {
     e = JSON.parse(e);
     if (e.status == true) {
 
-      $("#idproducto_ps").val(e.data.producto.idproducto);
+      $("#idproducto_sucursal_ps").val(e.data.producto.idproducto_sucursal);
       $("#modal-agregar-presentacionLabel1").html(e.data.producto.nombre);
 
       var tabla_presentacion = `
@@ -1065,8 +1069,7 @@ function listar_presentacion(idproducto){
               <th style="width: 15%;">Acciones</th>
               <th style="width: 40%;">Presentación</th>
               <th style="width: 20%;">Cant.</th>
-              <th style="width: 20%;">Precio</th>
-              <th style="width: 20%;">Estado</th>
+              <th style="width: 20%;">Precio x Und</th>
             </tr>
           </thead>
           <tbody>
@@ -1096,7 +1099,6 @@ function listar_presentacion(idproducto){
                     <td class="text-start"><small>${unidad}</small></td>
                     <td>${cantidad}</td>
                     <td>${precio_venta}</td>
-                    <td>${estado}</td>
                   </tr>
                 `;
               }).join('')
@@ -1123,10 +1125,13 @@ function mostrar_presentacion(idpresentacion){
     if (e.status == true) {
 
       $("#idpresentacion").val(e.data.idproducto_presentacion);
-      $("#idproducto_ps").val(e.data.idproducto);
+      $("#idproducto_sucursal_ps").val(e.data.idproducto);
 	    $('#um_presentacion').val(e.data.idsunat_c03_unidad_medida).trigger('change');
       $("#nombre_presentacion").val(e.data.nombre_presentacion);
-      $("#cant_ps").val(e.data.cantidad_presentacion);      
+      $("#cant_ps").val(e.data.cantidad_presentacion);  
+
+      $("#precio_presentacion_und").val(e.data.precio_venta);      
+      $("#precio_presentacion_total").val(e.data.precio_venta_total);      
       
       $('#modal-agregar-presentacionLabel1').text("Editar Presentación"); 
 
@@ -1199,6 +1204,26 @@ $("#um_presentacion").on('change', function () {
   var selectedOption = $(this).find('option:selected');// Obtener el valor seleccionado  
   var nombre = selectedOption.attr('nombre');// Obtener el atributo "nombre" de la opción seleccionada  
   $("#nombre_presentacion").val( nombre );
+});
+
+
+// Detecta cambios en los tres campos
+$('#precio_presentacion_und, #precio_presentacion_total, #cant_ps').on('input', function() {
+    let precioUnd = parseFloat($('#precio_presentacion_und').val());
+    let precioTotal = parseFloat($('#precio_presentacion_total').val());
+    let cantidad = parseFloat($('#cant_ps').val());
+
+    // Casuística 1: si hay precio por unidad y cantidad, calcula total
+    if (!isNaN(precioUnd) && !isNaN(cantidad) && $(this).attr('id') !== 'precio_presentacion_total') {
+        let totalCalculado = precioUnd * cantidad;
+        $('#precio_presentacion_total').val(totalCalculado.toFixed(2));
+    }
+
+    // Casuística 2: si hay precio total y cantidad, calcula precio por unidad
+    if (!isNaN(precioTotal) && !isNaN(cantidad) && cantidad > 0 && $(this).attr('id') !== 'precio_presentacion_und') {
+        let unidadCalculada = precioTotal / cantidad;
+        $('#precio_presentacion_und').val(unidadCalculada.toFixed(2));
+    }
 });
 
 // ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
@@ -1640,3 +1665,8 @@ function reload_filtro_categoria() { lista_select2("../ajax/producto.php?op=sele
 function reload_filtro_unidad_medida() { lista_select2("../ajax/producto.php?op=select2_filtro_u_medida", '#filtro_unidad_medida', null, '.charge_filtro_unidad_medida'); }
 function reload_filtro_marca() { lista_select2("../ajax/producto.php?op=select2_filtro_marca", '#filtro_marca', null, '.charge_filtro_marca'); }
 function reload_filtro_ubicacion() { lista_select2("../ajax/producto_cat_ubicacion.php?op=select2_filtro_ubicacion", '#filtro_ubicacion', null, '.charge_filtro_ubicacion'); }
+
+
+
+
+

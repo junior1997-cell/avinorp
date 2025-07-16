@@ -36,11 +36,14 @@ if (!isset($_SESSION["user_nombre"])) {
     $precio_x_mayor = isset($_POST["precio_x_mayor"])? limpiarCadena($_POST["precio_x_mayor"]):"";
 
     // PRESENTACION
-    $idpresentacion       = isset($_POST["idpresentacion"])? limpiarCadena($_POST["idpresentacion"]):"";
-    $idproducto_ps        = isset($_POST["idproducto_ps"])? limpiarCadena($_POST["idproducto_ps"]):"";
-    $umedida_ps           = isset($_POST["um_presentacion"])? limpiarCadena($_POST["um_presentacion"]):"";
-    $cant_ps              = isset($_POST["cant_ps"])? limpiarCadena($_POST["cant_ps"]):"";
-    $nombre_presentacion  = isset($_POST["nombre_presentacion"])? limpiarCadena($_POST["nombre_presentacion"]):"";
+    $idpresentacion          = isset($_POST["idpresentacion"])? limpiarCadena($_POST["idpresentacion"]):"";
+    $idproducto_sucursal_ps        = isset($_POST["idproducto_sucursal_ps"])? limpiarCadena($_POST["idproducto_sucursal_ps"]):"";
+    $umedida_ps              = isset($_POST["um_presentacion"])? limpiarCadena($_POST["um_presentacion"]):"";
+    $cant_ps                 = isset($_POST["cant_ps"])? limpiarCadena($_POST["cant_ps"]):"";
+    $nombre_presentacion     = isset($_POST["nombre_presentacion"])? limpiarCadena($_POST["nombre_presentacion"]):"";
+
+    $precio_presentacion_und    = isset($_POST["precio_presentacion_und"])? limpiarCadena($_POST["precio_presentacion_und"]):"";
+    $precio_presentacion_total  = isset($_POST["precio_presentacion_total"])? limpiarCadena($_POST["precio_presentacion_total"]):"";
 
     
     switch ($_GET["op"]){
@@ -61,7 +64,7 @@ if (!isset($_SESSION["user_nombre"])) {
                 <ul class="dropdown-menu">                
                   <li><a class="dropdown-item" href="javascript:void(0);" onclick="mostrar_detalle_producto(' . $value['idproducto'] . ');" ><i class="bi bi-eye"></i> Ver</a></li>
                   <li><a class="dropdown-item" href="javascript:void(0);" onclick="mostrar_producto(' . $value['idproducto'] .',true);" ><i class="ri-file-copy-2-line fs-12"></i> Duplicar registro</a></li>                  
-                  <li><a class="dropdown-item" href="javascript:void(0);" onclick="listar_presentacion(' . $value['idproducto'] . '); limpiar_form_ps();" ><i class="bi bi-file-earmark-plus"></i> Presentaciones</a></li>
+                  <li><a class="dropdown-item" href="javascript:void(0);" onclick="listar_presentacion(' . $value['idproducto_sucursal'] . '); limpiar_form_ps();" ><i class="bi bi-file-earmark-plus"></i> Presentaciones</a></li>
                   <li><a class="dropdown-item" href="javascript:void(0);" onclick="mostrar_imprimir_codigo(' . $value['idproducto'] . ');" ><i class="bi bi-upc"></i> Imprimir Código</a></li>
                   <li><a class="dropdown-item text-danger" href="javascript:void(0);" onclick="eliminar_papelera('.$value['idproducto'].',\''.$value['nombre'].'\');" ><i class="ri-delete-bin-line"></i> Eliminar</a></li>                  
                 </ul>
@@ -80,16 +83,15 @@ if (!isset($_SESSION["user_nombre"])) {
               "5" => ($value['stock']),
               "6" => ($value['precio_compra']),
               "7" => ($value['precio_venta']),
-              "8" => ($value['precio_por_mayor']),
-              "9" => '<textarea class="textarea_datatable bg-light"  readonly>' .($value['descripcion']). '</textarea>',
-              "10" => ($value['estado'] == '1') ? '<span class="badge bg-success-transparent"><i class="ri-check-fill align-middle me-1"></i>Activo</span>' : '<span class="badge bg-danger-transparent"><i class="ri-close-fill align-middle me-1"></i>Desactivado</span>',
+              "8" => '<textarea class="textarea_datatable bg-light"  readonly>' .($value['descripcion']). '</textarea>',
+              "9" => ($value['estado'] == '1') ? '<span class="badge bg-success-transparent"><i class="ri-check-fill align-middle me-1"></i>Activo</span>' : '<span class="badge bg-danger-transparent"><i class="ri-close-fill align-middle me-1"></i>Desactivado</span>',
               
-              "11" =>($value['categoria']),
-              "12" =>($value['marca']),
-              "13" =>($value['nombre']),
-              "14" =>($value['codigo']),
-              "15" =>($value['codigo_alterno']),
-              "16" =>($value['idproducto'])
+              "10" =>($value['categoria']),
+              "11" =>($value['marca']),
+              "12" =>($value['nombre']),
+              "13" =>($value['codigo']),
+              "14" =>($value['codigo_alterno']),
+              "15" =>($value['idproducto'])
             ];
           }
           $results =[
@@ -305,17 +307,17 @@ if (!isset($_SESSION["user_nombre"])) {
       // ══════════════════════════════════════  PRESENTACION  ══════════════════════════════════════
       case 'guardar_editar_presentacion':
         if (empty($idpresentacion)){
-          $rspta = $productos->insertar_presentacion($idproducto_ps, $umedida_ps, $cant_ps, $nombre_presentacion);
+          $rspta = $productos->insertar_presentacion($idproducto_sucursal_ps, $umedida_ps, $cant_ps, $nombre_presentacion,$precio_presentacion_und,$precio_presentacion_total);
           echo json_encode($rspta, true);
         } else {
-          $rspta = $productos->editar_presentacion($idpresentacion, $idproducto_ps, $umedida_ps, $cant_ps, $nombre_presentacion);
+          $rspta = $productos->editar_presentacion($idpresentacion, $idproducto_sucursal_ps, $umedida_ps, $cant_ps, $nombre_presentacion,$precio_presentacion_und,$precio_presentacion_total);
           echo json_encode($rspta, true);
         }
         
       break;
 
       case 'listar_presentacion':
-        $rspta=$productos->listar_presentacion($idproducto);
+        $rspta=$productos->listar_presentacion($_POST["idproducto_sucursal"]);
         echo json_encode($rspta, true);
       break;
 

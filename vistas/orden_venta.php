@@ -124,7 +124,7 @@ if (!isset($_SESSION["user_nombre"])) {
                         <span class="charge_filtro_marca"></span>
                       </label>
 
-                      <div class="form-check ms-auto ps-5">
+                      <div class="form-check ms-auto ps-5 hidden">
                         <input class="form-check-input" type="checkbox" value="SI" id="precio_por_mayor">
                         <label class="form-check-label" for="precio_por_mayor">
                           Precio por Mayor ?
