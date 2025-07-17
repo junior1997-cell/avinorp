@@ -20,7 +20,7 @@ if (!isset($_SESSION["user_nombre"])) {
   $ajax_ubigeo          = new Ubigeo();
   $ajax_centro_poblado  = new CentroPoblado();
 
-  $scheme_host  =  ($_SERVER['HTTP_HOST'] == 'localhost' ? 'http://localhost/libreria_sistema/' :  $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . '/');
+  $scheme_host  =  ($_SERVER['HTTP_HOST'] == 'localhost' ? 'http://localhost/avinorp/' :  $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . '/');
   $imagen_error = "this.src='../dist/svg/404-v2.svg'";
   $toltip       = '<script> $(function () { $(\'[data-bs-toggle="tooltip"]\').tooltip(); }); </script>';
 

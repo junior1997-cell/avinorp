@@ -1,5 +1,5 @@
 <?php
-$scheme_host  =  ($_SERVER['HTTP_HOST'] == 'localhost' ? 'http://localhost/libreria_sistema/' :  $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . '/');
+$scheme_host  =  ($_SERVER['HTTP_HOST'] == 'localhost' ? 'http://localhost/avinorp/' :  $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . '/');
 ?>
 
   <!-- Google tag (gtag.js) -->
@@ -20,30 +20,30 @@ $scheme_host  =  ($_SERVER['HTTP_HOST'] == 'localhost' ? 'http://localhost/libre
 
 <title><?php echo $title_page; ?> | Facturación Libreria sistema</title>
 
-<meta name="description" content="Novedades D&S: Tu tienda de útiles escolares, artículos para piñatas, pelotas, guitarritas de plástico y más. Encuentra todo para tus fiestas y escuela en un solo lugar. ¡Compra ahora y prepara celebraciones inolvidables!">
-<meta name="keywords" content="Novedades D&S, útiles escolares, artículos para piñatas, pelotas, guitarritas de plástico, fiestas, cumpleaños, juguetes, tienda de fiestas, material escolar, productos para escuela">
+<meta name="description" content="Avinorp Group: Tu tienda de útiles escolares, artículos para piñatas, pelotas, guitarritas de plástico y más. Encuentra todo para tus fiestas y escuela en un solo lugar. ¡Compra ahora y prepara celebraciones inolvidables!">
+<meta name="keywords" content="Avinorp Group, útiles escolares, artículos para piñatas, pelotas, guitarritas de plástico, fiestas, cumpleaños, juguetes, tienda de fiestas, material escolar, productos para escuela">
 <meta name="author" content="JDL TECNOLOGY SAC">
 <meta name="robots" content="index, follow">
 <!-- FACEBOOK -->
-<meta property="og:title" content="Novedades D&S - Útiles escolares y artículos para fiestas">
-<meta property="og:description" content="Descubre todo en útiles escolares, artículos para piñatas, pelotas y más en Novedades D&S. ¡Prepara las mejores fiestas y actividades escolares con nosotros!">
-<meta property="og:image" content="http://novedadesdys.jdl.pe/assets/images/brand-logos/desktop-white.png">
-<meta property="og:url" content="http://novedadesdys.jdl.pe">
+<meta property="og:title" content="Avinorp Group - Útiles escolares y artículos para fiestas">
+<meta property="og:description" content="Descubre todo en útiles escolares, artículos para piñatas, pelotas y más en Avinorp Group. ¡Prepara las mejores fiestas y actividades escolares con nosotros!">
+<meta property="og:image" content="http://avinorp.jdl.pe/assets/images/brand-logos/desktop-white.png">
+<meta property="og:url" content="http://avinorp.jdl.pe">
 <!-- TWITTER -->
 <!-- <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@nombre_de_usuario_de_twitter"> -->
-<meta name="twitter:title" content="Novedades D&S - Útiles escolares y artículos para fiestas">
-<meta name="twitter:description" content="Encuentra útiles escolares, artículos para piñatas, pelotas y guitarritas de plástico en Novedades D&S. Todo para tus celebraciones y escuela.">
-<meta name="twitter:image" content="http://novedadesdys.jdl.pe/assets/images/brand-logos/desktop-white.png">
+<meta name="twitter:title" content="Avinorp Group - Útiles escolares y artículos para fiestas">
+<meta name="twitter:description" content="Encuentra útiles escolares, artículos para piñatas, pelotas y guitarritas de plástico en Avinorp Group. Todo para tus celebraciones y escuela.">
+<meta name="twitter:image" content="http://avinorp.jdl.pe/assets/images/brand-logos/desktop-white.png">
 
 <script type="application/ld+json">
   {
     "@context": "http://schema.org",
     "@type": "Organization",
     "name": "Novedades D&C",
-    "url": "http://novedadesdys.jdl.pe",
+    "url": "http://avinorp.jdl.pe",
     "description": "Tienda especializada en útiles escolares, artículos para piñatas, pelotas, guitarritas de plástico y más. Todo para tus fiestas y escuela en un solo lugar.",
-    "logo": "http://novedadesdys.jdl.pe/assets/images/brand-logos/desktop-white.png",
+    "logo": "http://avinorp.jdl.pe/assets/images/brand-logos/desktop-white.png",
     "sameAs": [
       "https://www.facebook.com/novedadesdys",
       "https://www.instagram.com/novedadesdys"
@@ -69,7 +69,7 @@ $scheme_host  =  ($_SERVER['HTTP_HOST'] == 'localhost' ? 'http://localhost/libre
     "product": {
       "@type": "Product",
       "name": "Artículos para fiestas y útiles escolares",
-      "image": "http://novedadesdys.jdl.pe/assets/images/productos-fiesta-utiles.jpg",
+      "image": "http://avinorp.jdl.pe/assets/images/productos-fiesta-utiles.jpg",
       "description": "Amplia variedad de útiles escolares, artículos para piñatas, pelotas, guitarritas de plástico y más para todas tus necesidades escolares y de fiesta.",
       "brand": {
         "@type": "Brand",
@@ -77,7 +77,7 @@ $scheme_host  =  ($_SERVER['HTTP_HOST'] == 'localhost' ? 'http://localhost/libre
       },
       "offers": {
         "@type": "Offer",
-        "url": "http://novedadesdys.jdl.pe/productos",
+        "url": "http://avinorp.jdl.pe/productos",
         "priceCurrency": "PEN",
         "price": "Varía según el producto",
         "itemCondition": "http://schema.org/NewCondition",
@@ -87,7 +87,7 @@ $scheme_host  =  ($_SERVER['HTTP_HOST'] == 'localhost' ? 'http://localhost/libre
   }
 </script>
 
-<link rel="canonical" href="http://novedadesdys.jdl.pe">
+<link rel="canonical" href="http://avinorp.jdl.pe">
 
 <meta name="msapplication-navbutton-color" content="#444">
 <meta name="apple-mobile-web-app-capable" content="yes">

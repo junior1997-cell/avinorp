@@ -170,7 +170,7 @@
                       </tr>
                       <tr align="center">
                           <td style="font-size: 14px">
-                              .::<strong>NOVEDADES D&S </strong>
+                              .::<strong>Avinorp Group </strong>
                               ::.
                           </td>
                       </tr>
@@ -406,7 +406,7 @@
                           <td style="font-size: 11px;">
                               <span>Autorizado mediante resolución Nro: 182-2016/SUNAT Representación impresa del comprobante de venta electrónico, puede ser consultada en:</span>
                               <span class="fw-bold">
-                                  <b>https://novedadesdys.jdl.pe</b>
+                                  <b>https://avinorp.jdl.pe</b>
                               </span>
                               <span style="font-size: 10px; margin-top: 5px;">Hash:    </span>
                           </td>
@@ -422,7 +422,7 @@
                           </td>
                       </tr>
                       <tr>
-                          <td style="font-size: 10px; text-align: center;" colspan="2">https://novedadesdys.jdl.pe </td>
+                          <td style="font-size: 10px; text-align: center;" colspan="2">https://avinorp.jdl.pe </td>
                       </tr>
                   </tbody>
                   <br>
