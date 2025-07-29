@@ -3,15 +3,15 @@
 
 <!-- Mirrored from htmlstream.com/front/landing-classic-consulting.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 19 May 2021 14:17:37 GMT -->
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3PQPPN872C"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9X8M0XZRR3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    gtag('config', 'G-3PQPPN872C');
-  </script>
+  gtag('config', 'G-9X8M0XZRR3');
+</script>
 
   <!-- Meta Data -->
   <meta charset="UTF-8">
