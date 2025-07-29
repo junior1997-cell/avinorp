@@ -50,19 +50,19 @@
       //echo json_encode( [$idventa, $sunat_estado , $sunat_observacion, $sunat_code, $sunat_hash, $sunat_mensaje, $sunat_error]); die();
       $sql_1 = "UPDATE venta SET sunat_estado='$sunat_estado',sunat_observacion='$sunat_observacion',sunat_code='$sunat_code',
       sunat_hash='$sunat_hash',sunat_mensaje='$sunat_mensaje', sunat_error = '$sunat_error' WHERE idventa = '$idventa';";
-      return ejecutarConsulta($sql_1);
+      return ejecutarConsulta($sql_1, 'U', 'Actualizando estado de SUNAT -- Orden de venta Listar');
     } 
 
     public function crear_bitacora_reenvio_sunat( $idventa, $observacion_ejecucion, $sunat_estado , $sunat_observacion, $sunat_code, $sunat_hash, $sunat_mensaje, $sunat_error) {
       $sql_1 = "INSERT INTO  bitacora_reenvio_sunat (  idventa, observacion_de_ejecucion, sunat_estado, sunat_observacion, sunat_code, sunat_mensaje, sunat_hash, sunat_error  )
       values ( $idventa, '$observacion_ejecucion', '$sunat_estado' , '$sunat_observacion', '$sunat_code', '$sunat_mensaje', '$sunat_hash',  '$sunat_error' );";
-      return ejecutarConsulta($sql_1);
+      return ejecutarConsulta($sql_1, 'C');
     } 
 
     public function actualizar_doc_anulado_x_nota_credito( $idventa) {
       
       $sql_1 = "UPDATE venta SET sunat_estado='ANULADO' WHERE idventa = '$idventa';";
-      return ejecutarConsulta($sql_1);     
+      return ejecutarConsulta($sql_1, 'U', 'Actualizando estado anulado -- Orden de venta Listar');     
 
     } 
 
@@ -230,7 +230,7 @@
         -- Cantidad de cuotas acivas y pagadas
         vc_cantidad_pagada = ifnull((SELECT count(*) as cantidad FROM venta_cuotas as c WHERE c.idventa = v.idventa AND estado_cuota = 'pagado' AND c.estado = '1' and c.estado_delete = '1' ), 0)
         WHERE v.idventa = '$id' ;";
-      return ejecutarConsulta($sql);
+      return ejecutarConsulta($sql, 'U', 'Actualizando estado de Cuota -- Orden de venta Listar');
     }
 
     public function actualizar_estado_cuota($idventa_cuotas, $id_venta ){
@@ -243,7 +243,7 @@
       $estado_cuota = empty($existe_pago['data']) ? 'pendiente' : 'pagado';
 
       $sql = "UPDATE venta_cuotas SET estado_cuota = '$estado_cuota'  WHERE idventa_cuotas = '$idventa_cuotas' ;";
-      $estado = ejecutarConsulta($sql); if ($estado['status'] == false) {return $estado; } 
+      $estado = ejecutarConsulta($sql, 'U', 'Actualizando estado de cuota -- Orden de venta Listar'); if ($estado['status'] == false) {return $estado; } 
       $this->actualizar_estado_credito($id_venta);
       return $estado;
     }

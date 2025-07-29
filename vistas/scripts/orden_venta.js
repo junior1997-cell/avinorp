@@ -307,9 +307,9 @@ function create_code_producto(pre_codigo) {
 // ═══════                                         A G R E G A R   P R O D U C T O                                                                  ═══════
 // ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
 
-function seleccionar_producto(idproducto,idproducto_presentacion) {
+function seleccionar_producto(idproducto_sucursal,idproducto_presentacion) {
 
-  $.getJSON(`../ajax/orden_venta.php?op=listar_producto_select_pedido`,  { precio_por_mayor:precio_por_mayor,idproducto:idproducto,idproducto_presentacion:idproducto_presentacion },  function (e, textStatus, jqXHR) {
+  $.getJSON(`../ajax/orden_venta.php?op=listar_producto_select_pedido`,  { precio_por_mayor:precio_por_mayor,idproducto_sucursal:idproducto_sucursal,idproducto_presentacion:idproducto_presentacion },  function (e, textStatus, jqXHR) {
     
     if (e.status == true) {
       if ( e.data.stock_presentacion_entero >= 1 ) {
@@ -652,7 +652,7 @@ $(document).ready(function () {
           if (e.data.length > 0) {
             e.data.forEach(function (val, key) {
               $resultsList.append(`<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 col-xxl-2" style="cursor: pointer;">
-                      <div class="card custom-card product-card" onclick="seleccionar_producto(${val.idproducto},${val.idproducto_presentacion}, '${val.imagen}')">
+                      <div class="card custom-card product-card" onclick="seleccionar_producto(${val.idproducto_sucursal},${val.idproducto_presentacion}, '${val.imagen}')">
                         <div class="card-body">
                           <div class="product-image h-200px text-center" >
                             <img src="../assets/modulo/productos/${val.imagen}" class="card-img mb-3" alt="..." style="max-width: 100%; max-height: 100%; object-fit: contain;">

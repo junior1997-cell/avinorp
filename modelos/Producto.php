@@ -108,7 +108,7 @@
       }    
 	  }
 
-    public function editar($idproducto, $tipo, $codigo_alterno, $idsucursal, $categoria, $u_medida, $marca, $ubicacion, $nombre, $descripcion, $cant_um,
+    public function editar($idproducto,$idproducto_sucursal,$idproducto_presentacion, $tipo, $codigo_alterno, $idsucursal, $categoria, $u_medida, $marca, $ubicacion, $nombre, $descripcion, $cant_um,
      $stock, $stock_min, $precio_v, $precio_c, $precio_x_mayor, $img_producto, $idproducto_pp_set, $idproducto_p_set, $cantidad, $um_presentation) {
 
       $sql_0 = "SELECT * FROM producto WHERE nombre = '$nombre' AND idproducto <> '$idproducto';";
@@ -121,20 +121,20 @@
         WHERE idproducto = '$idproducto'";
         $producto = ejecutarConsulta($sql_1, 'U'); if ($producto['status'] == false) {  return $producto; }
 
-        $sql_2 = "UPDATE producto_presentacion SET cantidad = '$cant_um'
-        WHERE idproducto = '$idproducto' AND idsunat_c03_unidad_medida = '$u_medida';";
+        $sql_2 = "UPDATE producto_presentacion SET cantidad = '$cant_um',  precio_venta='$precio_v' , precio_venta_total='$precio_v'
+        WHERE idproducto_presentacion = '$idproducto_presentacion' AND idsunat_c03_unidad_medida = '$u_medida';";
         $presentacion = ejecutarConsulta($sql_2, 'U'); if ($presentacion['status'] == false) {  return $presentacion; }
 
         $sql_3 = "UPDATE producto_sucursal SET idsucursal = '$idsucursal', stock = '$stock', stock_minimo = '$stock_min', 
         precio_compra = '$precio_c', precio_venta = '$precio_v', precio_por_mayor = '$precio_x_mayor'
-        WHERE idproducto = '$idproducto';";
+        WHERE idproducto_sucursal = '$idproducto_sucursal';";
         $sucursal = ejecutarConsulta($sql_3, 'U'); if ($sucursal['status'] == false) {  return $sucursal; }
 
         $i = 0;
         $ii = 0;
         $set_prod_new = "";
 
-        if ( !empty($producto['data']) && !empty($idproducto_pp_set) ) {      
+       /* if ( !empty($producto['data']) && !empty($idproducto_pp_set) ) {      
 
           $id = [];
           $cant = [];
@@ -173,7 +173,7 @@
 
             $i++;
           }
-        }
+        }*/
 
         return $producto;
 
@@ -194,20 +194,33 @@
 
     public function mostrar($id){
 
-      $sql = "SELECT p.idproducto, p.nombre, p.descripcion, p.codigo, p.codigo_alterno, um.nombre AS unidad_medida, um.idsunat_c03_unidad_medida, pp.cantidad,
-      cat.nombre AS categoria, cat.idproducto_categoria, mc.nombre AS marca, mc.idproducto_marca, pcu.nombre AS ubicacion, pcu.idproducto_categoria_ubicacion,
-      ps.stock, ps.stock_minimo, ps.precio_compra, ps.precio_venta, ps.precio_por_mayor, p.imagen, p.estado
-      FROM producto AS p
-      INNER JOIN producto_presentacion AS pp ON p.idproducto = pp.idproducto
-      INNER JOIN producto_sucursal AS ps ON p.idproducto = ps.idproducto
-      INNER JOIN sunat_c03_unidad_medida AS um ON pp.idsunat_c03_unidad_medida = um.idsunat_c03_unidad_medida
-      INNER JOIN producto_categoria AS cat ON p.idproducto_categoria = cat.idproducto_categoria
-      INNER JOIN producto_marca AS mc ON p.idproducto_marca = mc.idproducto_marca
-      INNER JOIN producto_categoria_ubicacion AS pcu ON p.idproducto_categoria_ubicacion = pcu.idproducto_categoria_ubicacion
-      WHERE p.idproducto = '$id'";
+      $sql = "SELECT 
+                p.idproducto, 
+                p.idproducto_categoria, 
+                p.idproducto_marca, 
+                p.idproducto_categoria_ubicacion, 
+                p.tipo_producto, 
+                p.codigo, 
+                p.codigo_alterno, 
+                p.nombre, 
+                p.descripcion, 
+                p.imagen, 
+                ps.idproducto_sucursal, 
+                ps.idsucursal, 
+                ps.idproducto, 
+                ps.stock, 
+                ps.stock_minimo, 
+                ps.precio_compra, 
+                ps.precio_venta, 
+                ps.precio_por_mayor,
+                ( SELECT pp.idsunat_c03_unidad_medida FROM producto_presentacion AS pp WHERE pp.idproducto_sucursal = ps.idproducto_sucursal LIMIT 1 ) AS idsunat_c03_unidad_medida,
+                ( SELECT pp.idproducto_presentacion FROM producto_presentacion AS pp WHERE pp.idproducto_sucursal = ps.idproducto_sucursal LIMIT 1 ) AS idproducto_presentacion
+            FROM producto AS p
+            INNER JOIN producto_sucursal AS ps ON p.idproducto = ps.idproducto
+            WHERE p.idproducto = '$id';";
       $producto = ejecutarConsultaSimpleFila($sql); if ($producto['status'] == false) { return $producto;}
       
-      $sql_1 = "SELECT pa.idproducto AS idproducto_n, pa.cantidad as cantidad_asociado, pp.idproducto, p.nombre, p.descripcion, p.codigo, p.codigo_alterno, um.abreviatura AS um_abreviatura, pp.cantidad,
+      /*$sql_1 = "SELECT pa.idproducto AS idproducto_n, pa.cantidad as cantidad_asociado, pp.idproducto, p.nombre, p.descripcion, p.codigo, p.codigo_alterno, um.abreviatura AS um_abreviatura, pp.cantidad,
       GROUP_CONCAT(DISTINCT um.nombre ORDER BY pp.created_at SEPARATOR ', ') AS unidad_medida, 
       GROUP_CONCAT(DISTINCT pp.cantidad ORDER BY pp.created_at SEPARATOR ', ') AS cantidad_medida, 
       GROUP_CONCAT(DISTINCT pp.idproducto_presentacion ORDER BY pp.created_at SEPARATOR ', ') AS idpresentacion,
@@ -222,12 +235,14 @@
       INNER JOIN producto_categoria_ubicacion AS pcu ON p.idproducto_categoria_ubicacion = pcu.idproducto_categoria_ubicacion
       WHERE pa.idproducto = '$id' AND p.estado = 1 AND p.estado_delete = 1
       GROUP BY p.idproducto, p.nombre, cat.nombre, mc.nombre;";
-      $grupo = ejecutarConsultaArray($sql_1); if ($grupo['status'] == false) { return $grupo;}
+      $grupo = ejecutarConsultaArray($sql_1); if ($grupo['status'] == false) { return $grupo;}*/
 
       return $datos = [ 
         'status' => true, 
         'message' => 'Todo okey', 
-        'data' => [ 'producto' => $producto['data'], 'grupo' => $grupo['data'] ]
+        'data' => [ 'producto' => $producto['data'], 
+                    // 'grupo'    => isset($grupo['data']) ? $grupo['data'] : [] 
+                  ]
       ];
             
     }
@@ -276,32 +291,31 @@
     public function mostrar_eliminar_papelera($idproducto){
       $sql = "SELECT pp.idproducto_presentacion, um.nombre as unidad_medida
       FROM producto as p
-      INNER JOIN producto_presentacion as pp ON p.idproducto = pp.idproducto
-      INNER JOIN sunat_c03_unidad_medida as um ON pp.idsunat_c03_unidad_medida = um.idsunat_c03_unidad_medida
-      WHERE p.idproducto = '$idproducto' AND pp.estado = 1 AND pp.estado_delete = 1 ORDER BY pp.created_at";
+      INNER JOIN producto_sucursal AS ps ON p.idproducto = ps.idproducto
+      WHERE p.idproducto = '$id'; AND ps.estado = 1 AND ps.estado_delete = 1 AND p.estado = 1 AND p.estado_delete = 1 ORDER BY pp.created_at";
       return ejecutarConsultaArray($sql);
     }
 
     public function eliminar($id){
       $sql = "UPDATE producto SET estado_delete = 0 WHERE idproducto = '$id'";
-      $producto = ejecutarConsulta($sql, 'U');
+      return ejecutarConsulta($sql, 'U');
       
-      $sql_1 = "SELECT * FROM producto_presentacion WHERE idproducto = '$id' ORDER BY created_at";
+      /* $sql_1 = "SELECT * FROM producto_presentacion WHERE idproducto = '$id' ORDER BY created_at";
       $presentacion = ejecutarConsultaSimpleFila($sql_1); $idpresentacion = $presentacion['data']['idproducto_presentacion'];
       
       $sql_2 = "UPDATE producto_presentacion SET estado_delete = 0 WHERE idproducto_presentacion = '$idpresentacion'";
-      return ejecutarConsulta($sql_2, 'U');
+      return ejecutarConsulta($sql_2, 'U');*/
     }
 
     public function papelera($id){
       $sql = "UPDATE producto SET estado = 0 WHERE idproducto = '$id'";
-      $producto = ejecutarConsulta($sql, 'U');
+      return ejecutarConsulta($sql, 'U');
 
-      $sql_1 = "SELECT * FROM producto_presentacion WHERE idproducto = '$id' ORDER BY created_at";
+      /*$sql_1 = "SELECT * FROM producto_presentacion WHERE idproducto = '$id' ORDER BY created_at";
       $presentacion = ejecutarConsultaSimpleFila($sql_1); $idpresentacion = $presentacion['data']['idproducto_presentacion'];
       
       $sql_2 = "UPDATE producto_presentacion SET estado = 0 WHERE idproducto_presentacion = '$idpresentacion'";
-      return ejecutarConsulta($sql_2, 'U');
+      return ejecutarConsulta($sql_2, 'U');*/
     }
 
     // ═════════════════════════════════  PRODUCTOS AGRUPADOS  ══════════════════════════════════════

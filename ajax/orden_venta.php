@@ -104,7 +104,7 @@ if (!isset($_SESSION["user_nombre"])) {
       break;
 
       case 'listar_producto_select_pedido':
-        $rspta=$pre_ticket->listar_producto_select_pedido($_GET["precio_por_mayor"],$_GET["idproducto"],$_GET["idproducto_presentacion"]);
+        $rspta=$pre_ticket->listar_producto_select_pedido($_GET["precio_por_mayor"],$_GET["idproducto_sucursal"],$_GET["idproducto_presentacion"]);
        
         echo json_encode($rspta, true);
       break;

@@ -33,9 +33,10 @@
       $idproveedor,  $tipo_comprobante, $serie, $impuesto, $descripcion,
       $subtotal_compra, $tipo_gravada, $igv_compra, $total_compra, $fecha_compra, $img_comprob,
       //DATOS TABLA COMPRA DETALLE
-      $idproducto, $unidad_medida, $cantidad, $precio_sin_igv, $precio_igv, $precio_con_igv, 
+      $idproducto_sucursal, $unidad_medidacompra, $cantidad, $cantidad_x_medida_compra, $precio_sin_igv, $precio_igv, $precio_con_igv, 
       $descuento, $subtotal_producto    
     ){
+
       $sql_1 = "INSERT INTO compra(idproveedor, fecha_compra, tipo_comprobante, serie_comprobante, val_igv, descripcion, subtotal, igv, total, comprobante) 
       VALUES ('$idproveedor', '$fecha_compra', '$tipo_comprobante', '$serie', '$impuesto', '$descripcion', '$subtotal_compra', '$igv_compra', '$total_compra', '$img_comprob')";
       $newdata = ejecutarConsulta_retornarID($sql_1, 'C'); if ($newdata['status'] == false) { return  $newdata;}
@@ -45,27 +46,30 @@
       $detalle_new = "";
 
       if ( !empty($newdata['data']) ) {      
-        while ($i < count($idproducto)) {
+        while ($i < count($idproducto_sucursal)) {
 
-          $sql_2 = "INSERT INTO compra_detalle(idproducto, idcompra, cantidad, precio_sin_igv, igv, precio_con_igv, descuento, subtotal)
-          VALUES ('$idproducto[$i]', '$id', '$cantidad[$i]', '$precio_sin_igv[$i]', '$precio_igv[$i]', '$precio_con_igv[$i]', '$descuento[$i]', '$subtotal_producto[$i]');";
+          $total_unidades = $cantidad[$i] * $cantidad_x_medida_compra[$i]; 
+          $total_x_unidad = $subtotal_producto[$i]/$total_unidades; 
+
+          $sql_2 = "INSERT INTO compra_detalle(idcompra, idproducto_sucursal,idsunat_c03_unidad_compra, cantidad_compra, cantidad_compra_presentacion, cantidad, precio_sin_igv, igv, precio_con_igv, descuento, subtotal, precio_compra_por_unidad)
+          VALUES ('$id','$idproducto_sucursal[$i]' ,'$unidad_medidacompra[$i]' , '$cantidad[$i]','$cantidad_x_medida_compra[$i]','$total_unidades', '$precio_sin_igv[$i]', '$precio_igv[$i]', '$precio_con_igv[$i]', '$descuento[$i]', '$subtotal_producto[$i]','$total_x_unidad');";
           $detalle_new =  ejecutarConsulta_retornarID($sql_2, 'C'); if ($detalle_new['status'] == false) { return  $detalle_new;}          
           $id_d = $detalle_new['data'];
 
           // Aumentamos el Stock
-          $sql_2_1 = "UPDATE producto set  stock = stock + $cantidad[$i] where idproducto = '$idproducto[$i]' ;";
+          $sql_2_1 = "UPDATE producto_sucursal set  stock = stock + $total_unidades,precio_compra='$total_x_unidad' where idproducto_sucursal = '$idproducto_sucursal[$i]' ;";
           $actualizar_stock =  ejecutarConsulta($sql_2_1); if ($actualizar_stock['status'] == false) { return  $actualizar_stock;}
 
           // Calculamos promedio de compra por producto
-          $sql_3 = "SELECT AVG(precio_con_igv) AS promedio_precio FROM compra_detalle WHERE idproducto = '$idproducto[$i]';";
+          /*$sql_3 = "SELECT AVG(precio_con_igv) AS promedio_precio FROM compra_detalle WHERE idproducto = '$idproducto[$i]';";
           $agv_resultado = ejecutarConsultaSimpleFila($sql_3); if ($agv_resultado['status'] == false) { return $agv_resultado; }
 
           $promedio_precio = $agv_resultado['data']['promedio_precio'];
 
           // Actualizamos precio_compra en tabla producto
-          $sql_4 = "UPDATE producto SET precio_compra = '$promedio_precio' WHERE idproducto = '$idproducto[$i]';";
+          $sql_4 = "UPDATE producto_sucursal SET precio_compra = '$promedio_precio' WHERE idproducto = '$idproducto[$i]';";
           $actualizar_precio = ejecutarConsulta($sql_4); 
-          if ($actualizar_precio['status'] == false) { return $actualizar_precio; }
+          if ($actualizar_precio['status'] == false) { return $actualizar_precio; }*/
 
           $i = $i + 1;
         }
@@ -133,9 +137,10 @@
       $compra = ejecutarConsultaSimpleFila($sql_1); if ($compra['status'] == false) {return $compra; }
 
 
-      $sql_2 = "SELECT cd.*, pd.*
+      $sql_2 = "SELECT cd.*, pd.*,p.*
       FROM compra_detalle AS cd
-      INNER JOIN producto AS pd ON cd.idproducto = pd.idproducto
+      INNER JOIN producto_sucursal AS pd ON cd.idproducto_sucursal = pd.idproducto_sucursal
+      INNER JOIN producto AS p ON pd.idproducto = p.idproducto
       WHERE  cd.idcompra = '$idcompra'
       AND cd.estado = 1 AND cd.estado_delete = 1";
       $detalle = ejecutarConsultaArray($sql_2); if ($detalle['status'] == false) {return $detalle; }
@@ -180,35 +185,22 @@
     }
 
 
-
     public function listar_tabla_producto(){
-      $sql = "SELECT p.*, sum.nombre AS unidad_medida, cat.nombre AS categoria, mc.nombre AS marca
-      FROM producto AS p
-      INNER JOIN sunat_unidad_medida AS sum ON p.idsunat_unidad_medida = sum.idsunat_unidad_medida
-      INNER JOIN producto_categoria AS cat ON p.idproducto_categoria = cat.idproducto_categoria
-      INNER JOIN producto_marca AS mc ON p.idproducto_marca = mc.idproducto_marca
-      WHERE p.idproducto <> 1 AND p.idproducto_categoria <> 1  AND p.estado = 1 AND p.estado_delete = 1;";
+      $sql = "SELECT p.* from vw_producto as p
+      WHERE p.pro_estado = 1 AND p.pro_estado_delete = 1";
       return ejecutarConsulta($sql);
     }
 
-    public function mostrar_producto($idproducto){
-      $sql = "SELECT p.*, sum.nombre AS unidad_medida, cat.nombre AS categoria, mc.nombre AS marca
-      FROM producto AS p
-      INNER JOIN sunat_unidad_medida AS sum ON p.idsunat_unidad_medida = sum.idsunat_unidad_medida
-      INNER JOIN producto_categoria AS cat ON p.idproducto_categoria = cat.idproducto_categoria
-      INNER JOIN producto_marca AS mc ON p.idproducto_marca = mc.idproducto_marca
-      WHERE p.idproducto = '$idproducto'  AND p.estado = 1 AND p.estado_delete = 1;";
+    public function mostrar_producto($idproducto_sucursal){
+      $sql = "SELECT p.* from vw_producto as p
+      WHERE p.idproducto_sucursal = '$idproducto_sucursal'  AND p.pro_estado = 1 AND p.pro_estado_delete = 1;";
       return ejecutarConsultaSimpleFila($sql);
     }
 
     public function listar_producto_x_codigo($codigo){
-      $sql = "SELECT p.*, sum.nombre AS unidad_medida, cat.nombre AS categoria, mc.nombre AS marca
-      FROM producto AS p
-      INNER JOIN sunat_unidad_medida AS sum ON p.idsunat_unidad_medida = sum.idsunat_unidad_medida
-      INNER JOIN producto_categoria AS cat ON p.idproducto_categoria = cat.idproducto_categoria
-      INNER JOIN producto_marca AS mc ON p.idproducto_marca = mc.idproducto_marca
-      WHERE (p.codigo = '$codigo' OR p.codigo_alterno = '$codigo' ) AND p.estado = 1 AND p.estado_delete = 1;";
-        return ejecutarConsultaSimpleFila($sql);
+      $sql = "SELECT p.* from vw_producto as p
+      WHERE (p.codigo like '%$codigo%' OR p.codigo_alterno like '%$codigo%' OR p.nombre_producto like '%$codigo%' ) AND p.pro_estado = 1 AND p.pro_estado_delete = 1 ORDER BY p.nombre_producto LIMIT 10;";
+       return ejecutarConsultaArray($sql);      
       
     }
 

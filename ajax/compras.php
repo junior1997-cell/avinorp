@@ -23,8 +23,9 @@ if (!isset($_SESSION["user_nombre"])) {
     $imagen_error = "this.src='../dist/svg/404-v2.svg'";
     $toltip = '<script> $(function () { $(\'[data-bs-toggle="tooltip"]\').tooltip(); }); </script>';
 
-    $idcompra         = isset($_POST["idcompra"]) ? limpiarCadena($_POST["idcompra"]) : "";    
-    $idproveedor      = isset($_POST["idproveedor"]) ? limpiarCadena($_POST["idproveedor"]) : "";    
+    $idcompra              = isset($_POST["idcompra"]) ? limpiarCadena($_POST["idcompra"]) : "";    
+    $idsucursal         = isset($_POST["idsucursal"]) ? limpiarCadena($_POST["idsucursal"]) : "";    
+    $idproveedor            = isset($_POST["idproveedor"]) ? limpiarCadena($_POST["idproveedor"]) : "";    
     $tipo_comprobante = isset($_POST["tipo_comprobante"]) ? limpiarCadena($_POST["tipo_comprobante"]) : "";    
     $serie            = isset($_POST["serie"]) ? limpiarCadena($_POST["serie"]) : "";    
     $descripcion      = isset($_POST["descripcion"]) ? limpiarCadena($_POST["descripcion"]) : "";    
@@ -109,7 +110,7 @@ if (!isset($_SESSION["user_nombre"])) {
           
           $rspta = $compras->insertar( $idproveedor,  $tipo_comprobante, $serie, $impuesto, $descripcion,
           $subtotal_compra, $tipo_gravada, $igv_compra, $total_compra, $fecha_compra, $img_comprob,
-          $_POST["idproducto"], $_POST["unidad_medida"], $_POST["cantidad"], $_POST["precio_sin_igv"], $_POST["precio_igv"], $_POST["precio_con_igv"], 
+          $_POST["idproducto_sucursal"], $_POST["unidad_medidacompra"], $_POST["cantidad"],$_POST["cantidad_x_medida_compra"], $_POST["precio_sin_igv"], $_POST["precio_igv"], $_POST["precio_con_igv"], 
           $_POST["descuento"], $_POST["subtotal_producto"]);
 
           echo json_encode($rspta, true);
@@ -117,7 +118,7 @@ if (!isset($_SESSION["user_nombre"])) {
 
           $rspta = $compras->editar( $idcompra, $idproveedor,  $tipo_comprobante, $serie, $impuesto, $descripcion,
           $subtotal_compra, $tipo_gravada, $igv_compra, $total_compra, $fecha_compra, $img_comprob,
-          $_POST["idproducto"], $_POST["unidad_medida"], $_POST["cantidad"], $_POST["precio_sin_igv"], $_POST["precio_igv"], $_POST["precio_con_igv"], 
+          $_POST["idproducto_sucursal"], $_POST["unidad_medidacompra"], $_POST["cantidad"],$_POST["cantidad_x_medida_compra"], $_POST["precio_sin_igv"], $_POST["precio_igv"], $_POST["precio_con_igv"], 
           $_POST["descuento"], $_POST["subtotal_producto"]);
     
           echo json_encode($rspta, true);
@@ -186,7 +187,7 @@ if (!isset($_SESSION["user_nombre"])) {
       break;
 
       case 'listar_producto_x_codigo':
-        $rspta=$compras->listar_producto_x_codigo($_POST["codigo"]);
+        $rspta=$compras->listar_producto_x_codigo($_GET["search"]);
         echo json_encode($rspta, true);
       break;
 
@@ -201,7 +202,13 @@ if (!isset($_SESSION["user_nombre"])) {
       break;
 
       case 'mostrar_producto':
-        $rspta=$compras->mostrar_producto($_POST["idproducto"]);
+        $rspta=$compras->mostrar_producto($_POST["idproducto_sucursal"]);
+        echo json_encode($rspta, true);
+      break; 
+
+      
+      case 'listar_producto_search_producto':
+        $rspta=$compras->mostrar_producto($_GET["search"]);
         echo json_encode($rspta, true);
       break; 
 
@@ -216,19 +223,19 @@ if (!isset($_SESSION["user_nombre"])) {
           foreach($rspta['data'] as $key => $value){
 
             $img = empty($value['imagen']) ? 'no-producto.png' : $value['imagen'];
-            $data_btn_1 = 'btn-add-producto-1-'.$value['idproducto']; $data_btn_2 = 'btn-add-producto-2-'.$value['idproducto'];
+            $data_btn_1 = 'btn-add-producto-1-'.$value['idproducto_sucursal']; $data_btn_2 = 'btn-add-producto-2-'.$value['idproducto_sucursal'];
             $datas[] = [
-              "0" => '<button class="btn btn-warning '.$data_btn_1.' mr-1 px-1 py-1" onclick="agregarDetalleComprobante(' . $value['idproducto'] . ', false)" data-toggle="tooltip" data-original-title="Agregar continuo"><span class="fa fa-plus"></span></button>
-             <!-- <button class="btn btn-success '.$data_btn_2.' px-1 py-1" onclick="agregarDetalleComprobante(' . $value['idproducto'] . ', true)" data-toggle="tooltip" data-original-title="Agregar individual"><i class="fa-solid fa-list-ol"></i></button> -->',
+              "0" => '<button class="btn btn-warning '.$data_btn_1.' mr-1 px-1 py-1" onclick="agregarDetalleComprobante(' . $value['idproducto_sucursal'] . ',null, false)" data-toggle="tooltip" data-original-title="Agregar continuo"><span class="fa fa-plus"></span></button>
+             <!-- <button class="btn btn-success '.$data_btn_2.' px-1 py-1" onclick="agregarDetalleComprobante(' . $value['idproducto_sucursal'] . ', true)" data-toggle="tooltip" data-original-title="Agregar individual"><i class="fa-solid fa-list-ol"></i></button> -->',
               "1" => ('<i class="bi bi-upc"></i> '.$value['codigo'] .'<br> <i class="bi bi-person"></i> '.$value['codigo_alterno']) ,
               "2" =>  '<div class="d-flex flex-fill align-items-center">
-                        <div class="me-2 cursor-pointer" data-bs-toggle="tooltip" title="Ver imagen"><span class="avatar"> <img src="../assets/modulo/productos/' . $img . '" alt="" onclick="ver_img(\'' . $img . '\', \'' . encodeCadenaHtml(($value['nombre'])) . '\')"> </span></div>
+                        <div class="me-2 cursor-pointer" data-bs-toggle="tooltip" title="Ver imagen"><span class="avatar"> <img src="../assets/modulo/productos/' . $img . '" alt="" onclick="ver_img(\'' . $img . '\', \'' . encodeCadenaHtml(($value['nombre_producto'])) . '\')"> </span></div>
                         <div>
-                          <span class="d-block fs-11 mb-0 fw-semibold text-primary nombre_producto_' . $value['idproducto'] . '">'.$value['nombre'] .'</span>
+                          <span class="d-block fs-11 mb-0 fw-semibold text-primary nombre_producto_' . $value['idproducto_sucursal'] . '">'.$value['nombre_producto'] .'</span>
                           <span class="d-block fs-10 text-muted">Marca: <b>'.$value['marca'].'</b> | Cat: <b>'.$value['categoria'].'</b></span> 
                         </div>
                       </div>',             
-              "3" => ($value['precio_venta']),
+              "3" => ($value['precio_compra']),
               "4" => '<textarea class="textarea_datatable fs-11 bg-light"  readonly>' .($value['descripcion']). '</textarea>'
             ];
           }
@@ -303,6 +310,11 @@ if (!isset($_SESSION["user_nombre"])) {
         }
       break;
 
+      case 'select_u_medida_compra':
+        $rspta = $productos->select_u_medida();
+        echo json_encode($rspta, true);
+      break;
+
       case 'select_u_medida':
         $rspta = $productos->select_u_medida();
         $data = "";
@@ -310,7 +322,7 @@ if (!isset($_SESSION["user_nombre"])) {
         if ($rspta['status']) {
   
           foreach ($rspta['data'] as $key => $value) {
-            $data  .= '<option value="' . $value['idsunat_unidad_medida'] . '" title ="' . $value['nombre'] . '" >' . $value['nombre'] .' - '. $value['abreviatura'] . '</option>';
+            $data  .= '<option value="' . $value['idsunat_c03_unidad_medida'] . '" title ="' . $value['nombre'] . '" >' . $value['nombre'] .' - '. $value['abreviatura'] . '</option>';
           }
   
           $retorno = array(

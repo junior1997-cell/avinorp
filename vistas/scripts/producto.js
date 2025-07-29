@@ -69,7 +69,9 @@ function limpiar_form_producto(){
 	$('#precio_v').val('');
 	$('#precio_c').val('');
   $("#cant_um").val('1');
-	$('#precio_x_mayor').val('');
+	$('#precio_x_mayor').val(''); 
+	$('#idproducto_sucursal').val(''); 
+	$('#idproducto_presentacion').val(''); 
 
   $("#imagenProducto").val("");
   $("#imagenactualProducto").val("");
@@ -253,6 +255,8 @@ function mostrar_producto(idproducto, duplicar = false){
 
     } else {
       $('#idproducto').val(e.data.producto.idproducto);
+      $('#idproducto_sucursal').val(e.data.producto.idproducto_sucursal);
+      $('#idproducto_presentacion').val(e.data.producto.idproducto_presentacion);
     }
 		
     $('#categoria').val(e.data.producto.idproducto_categoria).trigger('change');
@@ -268,14 +272,14 @@ function mostrar_producto(idproducto, duplicar = false){
     $('#stock_min').val(e.data.producto.stock_minimo);
     $('#precio_v').val(e.data.producto.precio_venta);
     $('#precio_c').val(e.data.producto.precio_compra);
-    $('#cant_um').val(e.data.producto.cantidad);
+    $('#cant_um').val('1');
     $('#precio_x_mayor').val(e.data.producto.precio_por_mayor);
 
     $("#imagenmuestraProducto").show();
 		$("#imagenmuestraProducto").attr("src", "../assets/modulo/productos/" + e.data.producto.imagen);
 		$("#imagenactualProducto").val(e.data.producto.imagen);
 
-    if(Array.isArray(e.data.grupo) && e.data.grupo.length > 0){
+    /*if(Array.isArray(e.data.grupo) && e.data.grupo.length > 0){
 
       $('#idproducto_n').val(e.data.grupo[0].idproducto_n);
       $("#list-productos").show();
@@ -361,7 +365,7 @@ function mostrar_producto(idproducto, duplicar = false){
         cont++;
       });
       modificartotal();
-    }
+    }*/
 
     $('#cargando-1-fomulario').show();	$('#cargando-2-fomulario').hide();
     $('#form-agregar-producto').valid();
@@ -1293,7 +1297,7 @@ $(function () {
       stock_min:      { required: true, min: 0, step: 0.01,},
       precio_v:       { required: true, min: 0, step: 0.01,},
       precio_c:       { required: true, min: 0, step: 0.01,},
-      precio_x_mayor: { required: true, min: 0, step: 0.01,},
+      precio_x_mayor: {  min: 0, step: 0.01,},
       codigo_alterno: { required: true, minlength: 4, maxlength: 20,
         remote: {
           url: "../ajax/producto.php?op=validar_code_producto",
@@ -1318,7 +1322,7 @@ $(function () {
       stock_min:      { required: "Campo requerido", step: 'Maximo 2 decimales.'},
       precio_v:       { required: "Campo requerido", step: 'Maximo 2 decimales.'},
       precio_c:       { required: "Campo requerido", step: 'Maximo 2 decimales.'},
-      precio_x_mayor: { required: "Campo requerido", step: 'Maximo 2 decimales.'},
+      precio_x_mayor: { step: 'Maximo 2 decimales.'},
       codigo_alterno: { required: "Campo requerido", remote:"Código en uso."},
     },
         

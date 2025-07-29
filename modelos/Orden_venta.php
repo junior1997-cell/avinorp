@@ -62,7 +62,7 @@
       impuesto, venta_subtotal, venta_descuento, venta_igv, venta_total, venta_cuotas, usar_anticipo,  observacion_documento) 
       VALUES ('$o_idcliente', null, '$idperiodo_contable', 'NO', '$o_idsunat_c01', '$o_tipo_comprobante', '$o_serie_comprobante', '$o_impuesto', '$o_venta_subtotal', '$o_venta_descuento',
       '$o_venta_igv','$o_venta_total','NO', 'NO',   '$o_observacion_documento')"; 
-      $newdata = ejecutarConsulta_retornarID($sql_1, 'C'); if ($newdata['status'] == false) { return  $newdata;}
+      $newdata = ejecutarConsulta_retornarID($sql_1, 'C', 'Creando registro -- Orden de Venta'); if ($newdata['status'] == false) { return  $newdata;}
       $id = $newdata['data'];
 
       $i = 0;
@@ -80,21 +80,17 @@
           $id_d = $detalle_new['data'];            
 
           // Reducimos el Stock
-          $sql_2_1 = "UPDATE producto_sucursal set  stock = stock - $cantidad_total[$i] where idproducto = (SELECT DISTINCT idproducto FROM producto_presentacion where idproducto_presentacion ='$idproducto_presentacion[$i]') ;";
-          $actualizar_stock =  ejecutarConsulta($sql_2_1); if ($actualizar_stock['status'] == false) { return  $actualizar_stock;} 
+          $sql_2_1 = "UPDATE producto_sucursal set  stock = stock - $cantidad_total[$i] where idproducto_sucursal = (SELECT DISTINCT idproducto_sucursal FROM producto_presentacion where idproducto_presentacion ='$idproducto_presentacion[$i]') ;";
+          $actualizar_stock =  ejecutarConsulta($sql_2_1, 'U', 'Actualizando Estock -- Orden de Venta'); if ($actualizar_stock['status'] == false) { return  $actualizar_stock;} 
 
           $i = $i + 1;
         }
-      }       
-
-      // Si no tiene cuotas: es pagado y 0 cuotas
-      $sql_4 = "UPDATE venta SET  vc_estado  = 'pagado', vc_cantidad_total = '0' WHERE idventa = '$id';";
-      $actulizando = ejecutarConsulta($sql_4); if ($actulizando['status'] == false) { return  $actulizando;}      
+      }    
 
       // Actualizamos: total recibido y vuelto
       $monto_vuelto = $monto_recibido -floatval($o_venta_total) ;
-      $sql_4 = "UPDATE venta SET total_recibido = '$monto_recibido', total_vuelto = '$monto_vuelto' WHERE idventa = '$id';";
-      $actulizando_vuelto = ejecutarConsulta($sql_4); if ($actulizando_vuelto['status'] == false) { return  $actulizando_vuelto;} 
+      $sql_4 = "UPDATE venta SET vc_estado  = 'pagado', vc_cantidad_total = '0', total_recibido = '$monto_recibido', total_vuelto = '$monto_vuelto' WHERE idventa = '$id';";
+      $actulizando_vuelto = ejecutarConsulta($sql_4, 'U', 'Actualizando monto recibido y el vuelto -- Orden de Venta'); if ($actulizando_vuelto['status'] == false) { return  $actulizando_vuelto;} 
 
       return $newdata;      
     }
@@ -114,12 +110,13 @@
       $sql_1 = "UPDATE venta SET idpersona_cliente = '$o_idcliente', impuesto = '$o_impuesto', venta_subtotal = '$o_venta_subtotal', venta_descuento = '$o_venta_descuento', venta_igv = '$o_venta_igv', 
       venta_total = '$o_venta_total', observacion_documento = '$o_observacion_documento'     
       WHERE idventa = '$idventa'";
-      $actualizar_venta = ejecutarConsulta($sql_1, 'U');if ($actualizar_venta['status'] == false) { return $actualizar_venta; }
+      $actualizar_venta = ejecutarConsulta($sql_1, 'U', 'Actualizando datos Orden de Venta');if ($actualizar_venta['status'] == false) { return $actualizar_venta; }
 
       // Devolvemos el Stock
       foreach ($idproducto_presentacion as $key => $val) {
-        $sql_2_1 = "UPDATE producto_sucursal set  stock = stock + (select cantidad_total from venta_detalle where idproducto_presentacion = '$val' and idventa = '$idventa') where idproducto = (SELECT DISTINCT idproducto FROM producto_presentacion where idproducto_presentacion ='$val') ;";
-        $actualizar_stock =  ejecutarConsulta($sql_2_1); if ($actualizar_stock['status'] == false) { return  $actualizar_stock;} 
+        $sql_2_1 = "UPDATE producto_sucursal set  stock = stock + (select cantidad_total from venta_detalle where idproducto_presentacion = '$val' and idventa = '$idventa') 
+        where idproducto_sucursal = (SELECT DISTINCT idproducto_sucursal FROM producto_presentacion where idproducto_presentacion ='$val');";
+        $actualizar_stock =  ejecutarConsulta($sql_2_1, 'U', 'Devolviendo Stock -- Orden de Venta'); if ($actualizar_stock['status'] == false) { return  $actualizar_stock;} 
       }
       
       // Eliminamos los productos
@@ -139,8 +136,8 @@
           $detalle_new =  ejecutarConsulta_retornarID($sql_2, 'C'); if ($detalle_new['status'] == false) { return  $detalle_new;}          
           $id_d = $detalle_new['data'];     
         // Reducimos el Stock        
-        $sql_2_1 = "UPDATE producto_sucursal set  stock = stock - $cantidad_total[$i] where idproducto = (SELECT DISTINCT idproducto FROM producto_presentacion where idproducto_presentacion ='$idproducto_presentacion[$i]') ;";
-        $actualizar_stock =  ejecutarConsulta($sql_2_1); if ($actualizar_stock['status'] == false) { return  $actualizar_stock;} 
+        $sql_2_1 = "UPDATE producto_sucursal set  stock = stock - $cantidad_total[$i] where idproducto_sucursal = (SELECT DISTINCT idproducto_sucursal FROM producto_presentacion where idproducto_presentacion ='$idproducto_presentacion[$i]') ;";
+        $actualizar_stock =  ejecutarConsulta($sql_2_1, 'U', 'Actualizando Estock -- Orden de Venta'); if ($actualizar_stock['status'] == false) { return  $actualizar_stock;} 
 
         $i = $i + 1;
       }    
@@ -149,7 +146,7 @@
       // Actualizamos: total recibido y vuelto
       $monto_vuelto = $monto_recibido - $o_venta_total;
       $sql_4 = "UPDATE venta SET total_recibido = '$monto_recibido', total_vuelto = '$monto_vuelto' WHERE idventa = '$idventa';";
-      $actulizando_vuelto = ejecutarConsulta($sql_4); if ($actulizando_vuelto['status'] == false) { return  $actulizando_vuelto;} 
+      $actulizando_vuelto = ejecutarConsulta($sql_4, 'U', 'Actualizando monto recibido y el vuelto -- Orden de Venta'); if ($actulizando_vuelto['status'] == false) { return  $actulizando_vuelto;} 
 
       return $datos = ['status' => true, 'message' => 'Todo ok', 'data' => $idventa, 'id_tabla' => $idventa,  ];
 
@@ -160,7 +157,7 @@
       //echo json_encode( [$idventa, $sunat_estado , $sunat_observacion, $sunat_code, $sunat_hash, $sunat_mensaje, $sunat_error]); die();
       $sql_1 = "UPDATE venta SET sunat_estado='$sunat_estado',sunat_observacion='$sunat_observacion',sunat_code='$sunat_code',
       sunat_hash='$sunat_hash',sunat_mensaje='$sunat_mensaje', sunat_error = '$sunat_error' WHERE idventa = '$idventa';";
-      return ejecutarConsulta($sql_1);
+      return ejecutarConsulta($sql_1, 'U', 'Actualizando estado de SUNAT -- Orden de Venta');
     } 
     
     // ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
@@ -169,17 +166,17 @@
 
     public function listar_producto_x_nombre($search){
       $sql = "SELECT p.* from vw_producto_presentacion as p
-      WHERE (p.codigo like '%$search%' OR p.codigo_alterno like '%$search%' OR p.nombre_producto like '%$search%' ) AND p.pro_estado = 1 AND p.pro_estado_delete = 1 
+      WHERE (p.codigo like '%$search%' OR p.codigo_alterno like '%$search%' OR p.nombre_producto like '%$search%' ) AND p.pro_estado = 1 AND p.pro_estado_delete = 1 and pp_estado='1' and pp_estado_delete='1'
       ORDER BY p.nombre_producto asc, p.cantidad_presentacion asc LIMIT 20;";
       return ejecutarConsultaArray($sql);      
     }
 
-    public function listar_producto_select_pedido($precio_por_mayor,$idproducto,$idproducto_presentacion ){
+    public function listar_producto_select_pedido($precio_por_mayor,$idproducto_sucursal,$idproducto_presentacion ){
 
       $sql = "SELECT  p.*,
       CASE WHEN '$precio_por_mayor' = 'SI' THEN p.precio_por_mayor ELSE p.precio_venta END AS precio,imagen
       FROM vw_producto_presentacion as p
-      where p.idproducto='$idproducto' and p.idproducto_presentacion='$idproducto_presentacion';";
+      where p.idproducto_sucursal='$idproducto_sucursal' and p.idproducto_presentacion='$idproducto_presentacion';";
       return ejecutarConsultaSimpleFila($sql);
     }
 

@@ -124,15 +124,13 @@
       impuesto, venta_subtotal, venta_descuento, venta_igv, venta_total, venta_cuotas, usar_anticipo, observacion_documento)
       SELECT '$idpersona_cliente','$idcaja', '$idperiodo_contable', '$idventa', 'NO', '$idsunat_c01', '$tipo_comprobante', '$serie_comprobante',
           impuesto, venta_subtotal, venta_descuento, venta_igv, venta_total, 'NO', 'NO', observacion_documento
-      FROM venta WHERE idventa = '$idventa';"; 
- 
-
-      $newdata = ejecutarConsulta_retornarID($sql_1, 'C'); if ($newdata['status'] == false) { return  $newdata;}
+      FROM venta WHERE idventa = '$idventa';";
+      $newdata = ejecutarConsulta_retornarID($sql_1, 'C', "Creando registro $tipo_v -- Orden Venta Cobrar"); if ($newdata['status'] == false) { return  $newdata;}
 
       $id = $newdata['data'];
 
       $sql_updaterelac = "UPDATE venta SET iddocumento_relacionado='$id'  WHERE  idventa = '$idventa';";
-      $updaterelac = ejecutarConsulta($sql_updaterelac, 'C'); if ($updaterelac['status'] == false) { return  $updaterelac;}
+      $updaterelac = ejecutarConsulta($sql_updaterelac, 'U', "Actualizando documento relacionado -- Orden Venta Cobrar"); if ($updaterelac['status'] == false) { return  $updaterelac;}
 
       
       $i = 0;
@@ -185,15 +183,10 @@
         }
       }      
       
-      // Si no tiene cuotas: es pagado y 0 cuotas
-      $sql_4 = "UPDATE venta SET  vc_estado  = 'pagado', vc_cantidad_total = '0' WHERE idventa = '$id';";
-      $actulizando = ejecutarConsulta($sql_4); if ($actulizando['status'] == false) { return  $actulizando;}
-    
-
       // Actualizamos: total recibido y vuelto
       $monto_vuelto = $monto_recibido - $venta_total;
-      $sql_4 = "UPDATE venta SET total_recibido = '$monto_recibido', total_vuelto = '$monto_vuelto' WHERE idventa = '$id';";
-      $actulizando_vuelto = ejecutarConsulta($sql_4); if ($actulizando_vuelto['status'] == false) { return  $actulizando_vuelto;} 
+      $sql_4 = "UPDATE venta SET vc_estado  = 'pagado', vc_cantidad_total = '0', total_recibido = '$monto_recibido', total_vuelto = '$monto_vuelto' WHERE idventa = '$id';";
+      $actulizando_vuelto = ejecutarConsulta($sql_4, 'U', 'Actualizando monto recibido y el vuelto -- Orden de Venta Cobrar'); if ($actulizando_vuelto['status'] == false) { return  $actulizando_vuelto;} 
 
       return $newdata;         
       
@@ -204,49 +197,45 @@
       //echo json_encode( [$idventa, $sunat_estado , $sunat_observacion, $sunat_code, $sunat_hash, $sunat_mensaje, $sunat_error]); die();
       $sql_1 = "UPDATE venta SET sunat_estado='$sunat_estado',sunat_observacion='$sunat_observacion',sunat_code='$sunat_code',
       sunat_hash='$sunat_hash',sunat_mensaje='$sunat_mensaje', sunat_error = '$sunat_error' WHERE idventa = '$idventa';";
-      return ejecutarConsulta($sql_1);
+      return ejecutarConsulta($sql_1, 'U', 'Actualizando estado de SUNAT -- Orden de Venta Cobrar');
     } 
 
-public function anularOrden($idventa) {
+    public function anularOrden($idventa) {
 
-  // Paso 1: Obtener presentaciones
-  $sql = "SELECT idproducto_presentacion FROM venta_detalle WHERE idventa='$idventa'";
-  $devolverSt = ejecutarConsulta($sql); 
-  if ($devolverSt['status'] == false) { return $devolverSt; } 
+      // Paso 1: Obtener presentaciones
+      $sql = "SELECT idproducto_presentacion FROM venta_detalle WHERE idventa='$idventa'";
+      $devolverSt = ejecutarConsulta($sql); 
+      if ($devolverSt['status'] == false) { return $devolverSt; } 
 
-  $lista = [];
-  while ($fila = $devolverSt['data']->fetch_assoc()) {
-    $lista[] = $fila;
-  }
+      $lista = [];
+      while ($fila = $devolverSt['data']->fetch_assoc()) {
+        $lista[] = $fila;
+      }
 
-  // Paso 2: Devolver stock
-  foreach ($lista as $fila) {
-    $idprod = $fila['idproducto_presentacion'];
+      // Paso 2: Devolver stock
+      foreach ($lista as $fila) {
+        $idprod = $fila['idproducto_presentacion'];
 
-    $sql_2_1 = "
-      UPDATE producto_sucursal 
-      SET stock = stock + (
-        SELECT cantidad_total 
-        FROM venta_detalle 
-        WHERE idproducto_presentacion = '$idprod' AND idventa = '$idventa'
-      ) 
-      WHERE idproducto = (
-        SELECT DISTINCT idproducto 
-        FROM producto_presentacion 
-        WHERE idproducto_presentacion = '$idprod'
-      );
-    ";
+        $sql_2_1 = "UPDATE producto_sucursal 
+          SET stock = stock + (
+            SELECT cantidad_total 
+            FROM venta_detalle 
+            WHERE idproducto_presentacion = '$idprod' AND idventa = '$idventa'
+          ) 
+          WHERE idproducto_sucursal = (
+            SELECT DISTINCT idproducto_sucursal 
+            FROM producto_presentacion 
+            WHERE idproducto_presentacion = '$idprod'
+          );
+        ";
 
-    $actualizar_stock = ejecutarConsulta($sql_2_1); 
-    if ($actualizar_stock['status'] == false) { return $actualizar_stock; } 
-  }
+        $actualizar_stock = ejecutarConsulta($sql_2_1, 'U', 'Actualizando Estock -- Orden de Venta Cobrar'); if ($actualizar_stock['status'] == false) { return $actualizar_stock; } 
+      }
 
-  // Paso 3: Anular la venta
-  $sql = "UPDATE venta SET estado = '0', estado_delete = '0' WHERE idventa = '$idventa';";
-  return ejecutarConsulta($sql, 'U');
-}
-
-
+      // Paso 3: Anular la venta
+      $sql = "UPDATE venta SET estado = '0', estado_delete = '0' WHERE idventa = '$idventa';";
+      return ejecutarConsulta($sql, 'U', 'Anulando orden de venta -- Orden de Venta Cobrar');
+    }
     
     public function select2_series_comprobante($codigo){
 
@@ -262,7 +251,6 @@ public function anularOrden($idventa) {
       $sql="SELECT * FROM bancos WHERE idbancos <> 1 and estado = '1' AND estado_delete = '1';";
       return ejecutarConsultaArray($sql);
     }
-
 
 
     // ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════

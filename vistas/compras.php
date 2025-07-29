@@ -93,6 +93,7 @@ if (!isset($_SESSION["user_nombre"])) {
                       <form name="form-agregar-compra" id="form-agregar-compra" method="POST" class="needs-validation" novalidate>
                         <div class="row gy-2" id="cargando-1-formulario">
                           <input type="hidden" name="idcompra" id="idcompra" />
+                          <input type="hidden" name="idsucursal" id="idsucursal" value='1' />
 
                           <!-- ----------------- PROVEEDOR --------------- -->
                           <div class="col-md-6 col-lg-4 col-xl-6 col-xxl-6">
@@ -160,10 +161,19 @@ if (!isset($_SESSION["user_nombre"])) {
                           </div>
 
                           <div class="col-lg-5 col-xl-5 col-xxl-5">
-                            <div class="input-group">                              
-                              <button type="button" class="input-group-text buscar_x_code" onclick="listar_producto_x_codigo();"  data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Buscar por codigo de producto."><i class='bx bx-search-alt'></i></button>
-                              <input type="text" name="codigob" id="codigob" class="form-control" onkeyup="mayus(this);" placeholder="Digite el código de producto." >
+
+                            <div class="position-relative">
+                              <div class="input-group">
+                                <button type="button" class="input-group-text buscar_x_code" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Buscar por codigo de producto."><i class='bx bx-search-alt'></i></button>
+                                <input type="text" name="search_producto" id="search_producto" class="form-control" onkeyup="mayus(this);" placeholder="Busca por código, nombre o escanea el producto.">                                
+                              </div>
+                              <ul id="searchResults" class="list-group position-absolute w-100" style="z-index: 1000; display: none;"></ul>
                             </div>
+
+
+
+
+
                           </div>
 
                           <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-2">
@@ -182,16 +192,17 @@ if (!isset($_SESSION["user_nombre"])) {
                                 <th class="py-1" data-toggle="tooltip" data-original-title="Opciones">Op.</th>
                                 <th class="py-1">Cod</th>
                                 <th class="py-1">Producto</th>
-                                <th class="py-1">Unidad</th>
-                                <th class="py-1">Cantidad</th>                                        
-                                <th class="py-1" data-toggle="tooltip" data-original-title="Precio Unitario">P/U</th>
+                                <th class="py-1">Unidad Compra</th> 
+                                <th class="py-1">Cantidad</th>     
+                                <th class="py-1">cantidad x unidades compra</th>   
+                                <th class="py-1" data-toggle="tooltip" data-original-title="Precio Unitario">Precio</th>
                                 <th class="py-1">Descuento</th>
                                 <th class="py-1">Subtotal</th>
                                 <th class="py-1 text-center" ><i class='bx bx-cog fs-4'></i></th>
                               </thead>
                               <tbody></tbody>
                               <tfoot>
-                                <td colspan="6"></td>
+                                <td colspan="7"></td>
 
                                 <th class="text-right">
                                   <h6 class="tipo_gravada">SUBTOTAL</h6>
@@ -793,8 +804,8 @@ if (!isset($_SESSION["user_nombre"])) {
     <?php include("template/scripts.php"); ?>
     <?php include("template/custom_switcherjs.php"); ?>   
 
-    <script src="scripts/js_compras.js?version_jdl=1.07"></script>
-    <script src="scripts/compras.js?version_jdl=1.07"></script>
+    <script src="scripts/js_compras.js?version_jdl=1.09"></script>
+    <script src="scripts/compras.js?version_jdl=1.09"></script>
     <script>
       $(function() {
         $('[data-bs-toggle="tooltip"]').tooltip();

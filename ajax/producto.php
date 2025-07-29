@@ -34,6 +34,9 @@ if (!isset($_SESSION["user_nombre"])) {
     $precio_v       = isset($_POST["precio_v"])? limpiarCadena($_POST["precio_v"]):"";
     $precio_c       = isset($_POST["precio_c"])? limpiarCadena($_POST["precio_c"]):"";
     $precio_x_mayor = isset($_POST["precio_x_mayor"])? limpiarCadena($_POST["precio_x_mayor"]):"";
+    
+    $idproducto_sucursal = isset($_POST["idproducto_sucursal"])? limpiarCadena($_POST["idproducto_sucursal"]):"";
+    $idproducto_presentacion = isset($_POST["idproducto_presentacion"])? limpiarCadena($_POST["idproducto_presentacion"]):"";
 
     // PRESENTACION
     $idpresentacion          = isset($_POST["idpresentacion"])? limpiarCadena($_POST["idpresentacion"]):"";
@@ -141,7 +144,7 @@ if (!isset($_SESSION["user_nombre"])) {
             if (!empty($img1_ant)) { unlink("../assets/modulo/productos/" . $img1_ant); }         
           }  
 
-          $rspta = $productos->editar($idproducto, $tipo, $codigo_alterno, $idsucursal, $categoria, $u_medida, $marca, $ubicacion, $nombre, $descripcion,
+          $rspta = $productos->editar($idproducto, $idproducto_sucursal,$idproducto_presentacion, $tipo, $codigo_alterno, $idsucursal, $categoria, $u_medida, $marca, $ubicacion, $nombre, $descripcion,
             $cant_um, $stock, $stock_min, $precio_v, $precio_c, $precio_x_mayor, $img_producto,
             // lista de productos agrupados
             $idproducto_pp_set, $idproducto_p_set, $cantidad, $um_presentation

@@ -673,7 +673,7 @@
           <?php include("template/scripts.php"); ?>
           <?php include("template/custom_switcherjs.php"); ?> 
 
-          <script src="scripts/ingresos_caja.js?version_jdl=1.07"></script>
+          <script src="scripts/ingresos_caja.js?version_jdl=1.09"></script>
           <script> $(function () { $('[data-bs-toggle="tooltip"]').tooltip(); }); </script>
 
         

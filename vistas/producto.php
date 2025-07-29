@@ -42,7 +42,7 @@ if (!isset($_SESSION["user_nombre"])) {
             <div>
               <div class="d-md-flex d-block align-items-center ">
                 <button class="btn-modal-effect btn btn-primary label-btn btn-agregar m-r-10px" onclick="show_hide_form(2);  limpiar_form_producto(); create_code_producto('PR');"  > <i class="ri-user-add-line label-btn-icon me-2"></i>Agregar </button>
-                <button class="btn-modal-effect btn btn-secondary label-btn btn-agregar m-r-10px" onclick="show_hide_form(3);  limpiar_form_producto(); create_code_producto('PR');"  > <i class="ri-archive-line label-btn-icon me-2"></i>Agrupar </button>
+                <button class="btn-modal-effect btn btn-secondary label-btn btn-agregar m-r-10px  hidden" onclick="show_hide_form(3);  limpiar_form_producto(); create_code_producto('PR');"  > <i class="ri-archive-line label-btn-icon me-2"></i>Agrupar </button>
                 <button type="button" class="btn btn-danger btn-cancelar m-r-10px" onclick="show_hide_form(1);" style="display: none;"><i class="ri-arrow-left-line"></i></button>
                 <button class="btn-modal-effect btn btn-success label-btn btn-guardar m-r-10px" style="display: none;"  > <i class="ri-save-2-line label-btn-icon me-2" ></i> Guardar </button>
                 <div>
@@ -185,7 +185,9 @@ if (!isset($_SESSION["user_nombre"])) {
                           <input type="hidden" name="idproducto" id="idproducto"/>
                           <input type="hidden" name="idproducto_n" id="idproducto_n"/>
                           <input type="hidden" name="tipo" id="tipo" value="PR"/>
-                          <input type="hidden" name="idsucursal" id="idsucursal" value="1"/>
+                          <input type="hidden" name="idsucursal" id="idsucursal" value="1"/> 
+                          <input type="hidden" name="idproducto_sucursal" id="idproducto_sucursal"/> 
+                          <input type="hidden" name="idproducto_presentacion" id="idproducto_presentacion"/>
 
                           <div class="col-lg-12 col-xl-6 col-xxl-6">
                             <div class="row">
@@ -348,7 +350,7 @@ if (!isset($_SESSION["user_nombre"])) {
                                 </div> 
 
                                 <!-- ------------ PRECIO X MAYOR -------------- -->
-                                <div class="col-md-4 col-lg-4 col-xl-4 col-xxl-4 mt-3">
+                                <div class="col-md-4 col-lg-4 col-xl-4 col-xxl-4 mt-3 hidden">
                                   <div class="form-group">
                                     <label for="precio_x_mayor" class="form-label">Precio por Mayor</label>
                                     <input type="number" class="form-control" name="precio_x_mayor" id="precio_x_mayor" step="0.01" />
@@ -381,7 +383,7 @@ if (!isset($_SESSION["user_nombre"])) {
                           </div> 
 
                           <!-- ---------------- LISTA PRODUCTOS --------------- -->
-                          <div class="col-md-12 col-lg-12 col-xl-8 col-xxl-9 mt-3" id="list-productos">
+                          <div class="col-md-12 col-lg-12 col-xl-8 col-xxl-9 mt-3 hidden" id="list-productos" >
                             <div class="row">
                               <!-- Grupo -->
                               <div class="col-12 pl-0">
@@ -907,7 +909,7 @@ if (!isset($_SESSION["user_nombre"])) {
     <?php include("template/scripts.php"); ?>
     <?php include("template/custom_switcherjs.php"); ?>
 
-    <script src="scripts/producto.js?version_jdl=1.07"></script>
+    <script src="scripts/producto.js?version_jdl=1.09"></script>
     <script>
       $(function() {
         $('[data-bs-toggle="tooltip"]').tooltip();

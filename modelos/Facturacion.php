@@ -143,7 +143,7 @@
       VALUES ('$idpersona_cliente', '$idcaja', '$idperiodo_contable', '$nc_idventa', '$crear_y_emitir', '$idsunat_c01', '$tipo_comprobante', '$serie_comprobante', '$impuesto', '$venta_subtotal', '$venta_descuento',
       '$venta_igv','$venta_total','$f_venta_cuotas',
       '$usar_anticipo','$ua_monto_disponible','$ua_monto_usado', '$nc_motivo_anulacion', '$nc_tipo_comprobante', '$nc_serie_y_numero', '$tiempo_entrega', '$validez_cotizacion', '$cot_estado', '$observacion_documento')"; 
-      $newdata = ejecutarConsulta_retornarID($sql_1, 'C'); if ($newdata['status'] == false) { return  $newdata;}
+      $newdata = ejecutarConsulta_retornarID($sql_1, 'C', "Creando registro $tipo_v -- Facturacion"); if ($newdata['status'] == false) { return  $newdata;}
       $id = $newdata['data'];
 
       $i = 0;
@@ -161,7 +161,7 @@
           $id_d = $detalle_new['data'];            
 
           // Reducimos el Stock
-          $sql_2_1 = "UPDATE producto_sucursal set  stock = stock - $cantidad_total[$i] where idproducto = (SELECT DISTINCT idproducto FROM producto_presentacion where idproducto_presentacion ='$idproducto_presentacion[$i]') ;";
+          $sql_2_1 = "UPDATE producto_sucursal set  stock = stock - $cantidad_total[$i] where idproducto_sucursal = (SELECT DISTINCT idproducto_sucursal FROM producto_presentacion where idproducto_presentacion ='$idproducto_presentacion[$i]') ;";
           $actualizar_stock =  ejecutarConsulta($sql_2_1); if ($actualizar_stock['status'] == false) { return  $actualizar_stock;} 
 
           $i = $i + 1;
@@ -193,20 +193,20 @@
             if ( $val == 'on') {
               // return $id .' '. $idventa_cuotas[$key] .' '. $venta_total; die;
               $sql_4 = "CALL sp_insertar_pago_y_actualizar( $id, $idventa_cuotas[$key], $venta_total );";
-              $cuota_new =  ejecutarConsulta($sql_4, 'C'); //if ($cuota_new['status'] == false) { return  $cuota_new;} 
+              $cuota_new =  ejecutarConsulta($sql_4, 'C', 'Creando pago -- Facturacion'); //if ($cuota_new['status'] == false) { return  $cuota_new;} 
             }              
           }            
         }
 
         // Si no tiene cuotas: es pagado y 0 cuotas
         $sql_4 = "UPDATE venta SET  vc_estado  = 'pagado', vc_cantidad_total = '0' WHERE idventa = '$id';";
-        $actulizando = ejecutarConsulta($sql_4); if ($actulizando['status'] == false) { return  $actulizando;}
+        $actulizando = ejecutarConsulta($sql_4, 'U', 'Actualizando estado pagado -- Facturacion'); if ($actulizando['status'] == false) { return  $actulizando;}
       } 
 
       // Actualizamos: total recibido y vuelto
       $monto_vuelto = $monto_recibido - $venta_total;
       $sql_4 = "UPDATE venta SET total_recibido = '$monto_recibido', total_vuelto = '$monto_vuelto' WHERE idventa = '$id';";
-      $actulizando_vuelto = ejecutarConsulta($sql_4); if ($actulizando_vuelto['status'] == false) { return  $actulizando_vuelto;} 
+      $actulizando_vuelto = ejecutarConsulta($sql_4, 'U', 'Actualizando total recibido y vuelto -- Facturacion'); if ($actulizando_vuelto['status'] == false) { return  $actulizando_vuelto;} 
 
       return $newdata;         
       
@@ -261,13 +261,13 @@
       nc_tipo_comprobante = '$nc_tipo_comprobante', nc_serie_y_numero = '$nc_serie_y_numero', cot_tiempo_entrega = '$tiempo_entrega', 
       cot_validez = '$validez_cotizacion', cot_estado = '$cot_estado', observacion_documento = '$observacion_documento'     
       WHERE idventa = '$idventa'";
-      $actualizar_venta = ejecutarConsulta($sql_1, 'U');if ($actualizar_venta['status'] == false) { return $actualizar_venta; }
+      $actualizar_venta = ejecutarConsulta($sql_1, 'U', "Actualizando registro $tipo_v -- Facturacion");if ($actualizar_venta['status'] == false) { return $actualizar_venta; }
 
       // Devolvemos el Stock
       foreach ($idproducto_presentacion as $key => $val) {
 
         $sql_2_1 = "UPDATE producto_sucursal set  stock = stock + (select cantidad_total from venta_detalle where idproducto_presentacion = '$val' and idventa = '$idventa') where idproducto = (SELECT DISTINCT idproducto FROM producto_presentacion where idproducto_presentacion ='$val') ;";
-        $actualizar_stock =  ejecutarConsulta($sql_2_1); if ($actualizar_stock['status'] == false) { return  $actualizar_stock;} 
+        $actualizar_stock =  ejecutarConsulta($sql_2_1, 'U', "Devolviendo Estock -- Facturacion"); if ($actualizar_stock['status'] == false) { return  $actualizar_stock;} 
       }
       
       // Eliminamos los productos
@@ -287,8 +287,8 @@
           $detalle_new =  ejecutarConsulta_retornarID($sql_2, 'C'); if ($detalle_new['status'] == false) { return  $detalle_new;}          
           $id_d = $detalle_new['data'];     
         // Reducimos el Stock        
-        $sql_2_1 = "UPDATE producto_sucursal set  stock = stock - $cantidad_total[$i] where idproducto = (SELECT DISTINCT idproducto FROM producto_presentacion where idproducto_presentacion ='$idproducto_presentacion[$i]') ;";
-        $actualizar_stock =  ejecutarConsulta($sql_2_1); if ($actualizar_stock['status'] == false) { return  $actualizar_stock;} 
+        $sql_2_1 = "UPDATE producto_sucursal set  stock = stock - $cantidad_total[$i] where idproducto_sucursal = (SELECT DISTINCT idproducto_sucursal FROM producto_presentacion where idproducto_presentacion ='$idproducto_presentacion[$i]') ;";
+        $actualizar_stock =  ejecutarConsulta($sql_2_1, 'U', "Actualizando Estock -- Facturacion"); if ($actualizar_stock['status'] == false) { return  $actualizar_stock;} 
 
         $i = $i + 1;
       }      
@@ -326,13 +326,13 @@
 
         // Si no tiene cuotas: es pagado y 0 cuotas
         $sql_4 = "UPDATE venta SET  vc_estado  = 'pagado', vc_cantidad_total = '0' WHERE idventa = '$idventa';";
-        $actulizando = ejecutarConsulta($sql_4); if ($actulizando['status'] == false) { return  $actulizando;}
+        $actulizando = ejecutarConsulta($sql_4, 'U', "Actualizando estado pagado -- Facturacion"); if ($actulizando['status'] == false) { return  $actulizando;}
       } 
 
       // Actualizamos: total recibido y vuelto
       $monto_vuelto = $monto_recibido - $venta_total;
       $sql_4 = "UPDATE venta SET total_recibido = '$monto_recibido', total_vuelto = '$monto_vuelto' WHERE idventa = '$idventa';";
-      $actulizando_vuelto = ejecutarConsulta($sql_4); if ($actulizando_vuelto['status'] == false) { return  $actulizando_vuelto;} 
+      $actulizando_vuelto = ejecutarConsulta($sql_4, 'U', "Actualizando total recibid y vuelto -- Facturacion"); if ($actulizando_vuelto['status'] == false) { return  $actulizando_vuelto;} 
 
       return $datos = ['status' => true, 'message' => 'Todo ok', 'data' => $idventa, 'id_tabla' => $idventa,  ];
 
@@ -342,13 +342,13 @@
       //echo json_encode( [$idventa, $sunat_estado , $sunat_observacion, $sunat_code, $sunat_hash, $sunat_mensaje, $sunat_error]); die();
       $sql_1 = "UPDATE venta SET sunat_estado='$sunat_estado',sunat_observacion='$sunat_observacion',sunat_code='$sunat_code',
       sunat_hash='$sunat_hash',sunat_mensaje='$sunat_mensaje', sunat_error = '$sunat_error' WHERE idventa = '$idventa';";
-      return ejecutarConsulta($sql_1);
+      return ejecutarConsulta($sql_1, 'U', 'Actualizando estado de SUNAT -- Orden de Venta');
     } 
 
     public function crear_bitacora_reenvio_sunat( $idventa, $observacion_ejecucion, $sunat_estado , $sunat_observacion, $sunat_code, $sunat_hash, $sunat_mensaje, $sunat_error) {
       $sql_1 = "INSERT INTO  bitacora_reenvio_sunat (  idventa, observacion_de_ejecucion, sunat_estado, sunat_observacion, sunat_code, sunat_mensaje, sunat_hash, sunat_error  )
       values ( $idventa, '$observacion_ejecucion', '$sunat_estado' , '$sunat_observacion', '$sunat_code', '$sunat_mensaje', '$sunat_hash',  '$sunat_error' );";
-      return ejecutarConsulta($sql_1);
+      return ejecutarConsulta($sql_1, 'C');
     } 
 
     public function actualizar_doc_anulado_x_nota_credito( $idventa) {
@@ -358,7 +358,7 @@
           SELECT v.iddocumento_relacionado FROM venta AS v WHERE v.idventa = '$idventa'
         ) AS id_venta
       )";
-      return ejecutarConsulta($sql_1);     
+      return ejecutarConsulta($sql_1, 'U', 'Actualizando estado de SUNAT anulado de Nota de credito -- Facturacion');     
 
     } 
 
@@ -436,7 +436,7 @@
 
       if ( empty($busca_estado['data']) ) {
         $sql = "UPDATE venta SET sunat_estado = 'ANULADO', estado_delete = '0' WHERE idventa = '$id'";
-        return ejecutarConsulta($sql, 'D');
+        return ejecutarConsulta($sql, 'D', 'Anulando registro -- Facturacion');
       }else{
         $html_tbl_body ='';
         foreach ($busca_cuota['data'] as $key => $val) {
@@ -477,7 +477,7 @@
 
       if ( empty($busca_estado['data']) ) {
         $sql = "UPDATE venta SET sunat_estado = 'ANULADO', estado = '0'  WHERE idventa = '$id'";
-        return ejecutarConsulta($sql, 'T');
+        return ejecutarConsulta($sql, 'T', 'Anulando registro -- Facturacion');
       }else{
         $html_tbl_body ='';
         foreach ($busca_cuota['data'] as $key => $val) {
@@ -526,7 +526,7 @@
         -- Cantidad de cuotas acivas y pagadas
         vc_cantidad_pagada = ifnull((SELECT count(*) as cantidad FROM venta_cuotas as c WHERE c.idventa = v.idventa AND estado_cuota = 'pagado' AND c.estado = '1' and c.estado_delete = '1' ), 0)
         WHERE v.idventa = '$id' ;";
-      return ejecutarConsulta($sql);
+      return ejecutarConsulta($sql, 'U', 'Actualizando estado cuota -- Facturacion');
     }
 
     public function actualizar_estado_cuota($idventa_cuotas, $id_venta ){
