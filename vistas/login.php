@@ -19,51 +19,32 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="Content-Language" content="es">
 
-  <title> Login | Corporación Avinorp sistema </title>  
+  <title> Login | Libreria sistema </title>  
 
-<<<<<<< HEAD
-
-  <meta name="description" content="Corporación Avinorp: Tu tienda de Huevos de alta calidad disponibles a precios de oferta. Encuentra huevos económicos en diversas presentaciones para tu compra!">
-  <meta name="keywords" content="Corporación Avinorp, Venta, Huevos">
+  <meta name="description" content="Novedades D&S: Tu tienda de útiles escolares, artículos para piñatas, pelotas, guitarritas de plástico y más. Encuentra todo para tus fiestas y escuela en un solo lugar. ¡Compra ahora y prepara celebraciones inolvidables!">
+  <meta name="keywords" content="Novedades D&S, útiles escolares, artículos para piñatas, pelotas, guitarritas de plástico, fiestas, cumpleaños, juguetes, tienda de fiestas, material escolar, productos para escuela">
   <meta name="author" content="JDL TECNOLOGY SAC">
   <meta name="robots" content="index, follow">
   <!-- FACEBOOK -->
-  <meta property="og:title" content="Corporación Avinorp - Venta de Huevos">
-  <meta property="og:description" content="Tu tienda de Huevos de alta calidad disponibles a precios de oferta. Encuentra huevos económicos en diversas presentaciones para tu compra!">
-  <meta property="og:image" content="http://novedadesdys.jdl.pe/assets/images/brand-logos/desktop-white.png">
-  <meta property="og:url" content="http://novedadesdys.jdl.pe">
+  <meta property="og:title" content="Novedades D&S - Útiles escolares y artículos para fiestas">
+  <meta property="og:description" content="Descubre todo en útiles escolares, artículos para piñatas, pelotas y más en Novedades D&S. ¡Prepara las mejores fiestas y actividades escolares con nosotros!">
+  <meta property="og:image" content="https://novedadesdys.jdl.pe/assets/images/brand-logos/desktop-white.png">
+  <meta property="og:url" content="https://novedadesdys.jdl.pe">
   <!-- TWITTER -->
   <!-- <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@nombre_de_usuario_de_twitter"> -->
-  <meta name="twitter:title" content="Corporación Avinorp - Tu tienda de Huevos de alta calidad disponibles a precios de oferta. Encuentra huevos económicos en diversas presentaciones para tu compra!">
-  <meta name="twitter:description" content="Encuentra Huevos al mejor precio.">
-  <meta name="twitter:image" content="http://novedadesdys.jdl.pe/assets/images/brand-logos/desktop-white.png">
-=======
-  <meta name="description" content="Avinorp Group: Tu tienda de útiles escolares, artículos para piñatas, pelotas, guitarritas de plástico y más. Encuentra todo para tus fiestas y escuela en un solo lugar. ¡Compra ahora y prepara celebraciones inolvidables!">
-  <meta name="keywords" content="Avinorp Group, útiles escolares, artículos para piñatas, pelotas, guitarritas de plástico, fiestas, cumpleaños, juguetes, tienda de fiestas, material escolar, productos para escuela">
-  <meta name="author" content="JDL TECNOLOGY SAC">
-  <meta name="robots" content="index, follow">
-  <!-- FACEBOOK -->
-  <meta property="og:title" content="Avinorp Group - Útiles escolares y artículos para fiestas">
-  <meta property="og:description" content="Descubre todo en útiles escolares, artículos para piñatas, pelotas y más en Avinorp Group. ¡Prepara las mejores fiestas y actividades escolares con nosotros!">
-  <meta property="og:image" content="https://avinorp.jdl.pe/assets/images/brand-logos/desktop-white.png">
-  <meta property="og:url" content="https://avinorp.jdl.pe">
-  <!-- TWITTER -->
-  <!-- <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@nombre_de_usuario_de_twitter"> -->
-  <meta name="twitter:title" content="Avinorp Group - Útiles escolares y artículos para fiestas">
-  <meta name="twitter:description" content="Encuentra útiles escolares, artículos para piñatas, pelotas y guitarritas de plástico en Avinorp Group. Todo para tus celebraciones y escuela.">
-  <meta name="twitter:image" content="https://avinorp.jdl.pe/assets/images/brand-logos/desktop-white.png">
->>>>>>> a6a39b2274a143dcbdc94dfad4b9000557635d81
+  <meta name="twitter:title" content="Novedades D&S - Útiles escolares y artículos para fiestas">
+  <meta name="twitter:description" content="Encuentra útiles escolares, artículos para piñatas, pelotas y guitarritas de plástico en Novedades D&S. Todo para tus celebraciones y escuela.">
+  <meta name="twitter:image" content="https://novedadesdys.jdl.pe/assets/images/brand-logos/desktop-white.png">
 
   <script type="application/ld+json">
     {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Novedades D&C",
-    "url": "https://avinorp.jdl.pe",
+    "url": "https://novedadesdys.jdl.pe",
     "description": "Tienda especializada en útiles escolares, artículos para piñatas, pelotas, guitarritas de plástico y más. Todo para tus fiestas y escuela en un solo lugar.",
-    "logo": "https://avinorp.jdl.pe/assets/images/brand-logos/desktop-white.png",
+    "logo": "https://novedadesdys.jdl.pe/assets/images/brand-logos/desktop-white.png",
     "sameAs": [
       "https://www.facebook.com/novedadesdys",
       "https://www.instagram.com/novedadesdys"
@@ -89,7 +70,7 @@
     "product": {
       "@type": "Product",
       "name": "Artículos para fiestas y útiles escolares",
-      "image": "https://avinorp.jdl.pe/assets/images/productos-fiesta-utiles.jpg",
+      "image": "https://novedadesdys.jdl.pe/assets/images/productos-fiesta-utiles.jpg",
       "description": "Amplia variedad de útiles escolares, artículos para piñatas, pelotas, guitarritas de plástico y más para todas tus necesidades escolares y de fiesta.",
       "brand": {
         "@type": "Brand",
@@ -97,7 +78,7 @@
       },
       "offers": {
         "@type": "Offer",
-        "url": "https://avinorp.jdl.pe/productos",
+        "url": "https://novedadesdys.jdl.pe/productos",
         "priceCurrency": "PEN",
         "price": "Varía según el producto",
         "itemCondition": "https://schema.org/NewCondition",
@@ -107,19 +88,19 @@
   }
   </script>
 
-  <link rel="canonical" href="https://avinorp.jdl.pe">
+  <link rel="canonical" href="https://novedadesdys.jdl.pe">
 
   <meta name="msapplication-navbutton-color" content="#444">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <link rel="manifest" href="https://avinorp.jdl.pe/assets/images/app-download/manifest.json?v=<?php echo date('ymd'); ?>">
+  <link rel="manifest" href="https://novedadesdys.jdl.pe/assets/images/app-download/manifest.json?v=<?php echo date('ymd'); ?>">
   <meta name="msapplication-TileColor" content="#ffffff">
-  <meta name="msapplication-TileImage" content="https://avinorp.jdl.pe/assets/images/brand-logos/toggle-dark.png">
+  <meta name="msapplication-TileImage" content="https://novedadesdys.jdl.pe/assets/images/brand-logos/toggle-dark.png">
   <meta name="theme-color" content="#ffffff">
 
   <!-- Favicon -->
-  <link rel="icon" href="https://avinorp.jdl.pe/assets/images/brand-logos/ico-novedades-dys.png" type="image/x-icon">
+  <link rel="icon" href="https://novedadesdys.jdl.pe/assets/images/brand-logos/ico-novedades-dys.png" type="image/x-icon">
   <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&amp;display=swap" rel="stylesheet">
   <!-- CSS Implementing Plugins -->
