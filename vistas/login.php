@@ -19,23 +19,23 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="Content-Language" content="es">
 
-  <title> Login | Libreria sistema </title>  
+  <title> Login | Corporación Avinorp sistema </title>  
 
-  <meta name="description" content="Novedades D&S: Tu tienda de útiles escolares, artículos para piñatas, pelotas, guitarritas de plástico y más. Encuentra todo para tus fiestas y escuela en un solo lugar. ¡Compra ahora y prepara celebraciones inolvidables!">
-  <meta name="keywords" content="Novedades D&S, útiles escolares, artículos para piñatas, pelotas, guitarritas de plástico, fiestas, cumpleaños, juguetes, tienda de fiestas, material escolar, productos para escuela">
+  <meta name="description" content="Corporacion Avinorp: Tu tienda de Huevos de alta calidad disponibles a precios de oferta. Encuentra huevos económicos en diversas presentaciones para tu compra.!">
+  <meta name="keywords" content="Corporacion Avinorp, Venta, Huevos, por Mayor, por Menor">
   <meta name="author" content="JDL TECNOLOGY SAC">
   <meta name="robots" content="index, follow">
   <!-- FACEBOOK -->
-  <meta property="og:title" content="Novedades D&S - Útiles escolares y artículos para fiestas">
-  <meta property="og:description" content="Descubre todo en útiles escolares, artículos para piñatas, pelotas y más en Novedades D&S. ¡Prepara las mejores fiestas y actividades escolares con nosotros!">
-  <meta property="og:image" content="https://avinorp.jdl.pe/assets/images/brand-logos/desktop-white.png">
-  <meta property="og:url" content="https://avinorp.jdl.pe">
+  <meta property="og:title" content="Corporacion Avinorp - Venta de Huevos al por mayor">
+  <meta property="og:description" content="Descubre todo sobre Venta, Huevos, por Mayor, por Menor!">
+  <meta property="og:image" content="http://avinorp.jdl.pe/assets/images/brand-logos/desktop-white.png">
+  <meta property="og:url" content="http://avinorp.jdl.pe">
   <!-- TWITTER -->
   <!-- <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@nombre_de_usuario_de_twitter"> -->
-  <meta name="twitter:title" content="Novedades D&S - Útiles escolares y artículos para fiestas">
-  <meta name="twitter:description" content="Encuentra útiles escolares, artículos para piñatas, pelotas y guitarritas de plástico en Novedades D&S. Todo para tus celebraciones y escuela.">
-  <meta name="twitter:image" content="https://avinorp.jdl.pe/assets/images/brand-logos/desktop-white.png">
+  <meta name="twitter:title" content="Corporacion Avinorp - Tu tienda de Huevos de alta calidad disponibles a precios de oferta. Encuentra huevos económicos en diversas presentaciones para tu compra.">
+  <meta name="twitter:description" content="Descubre todo sobre Venta, Huevos, por Mayor, por Menor.">
+  <meta name="twitter:image" content="http://avinorp.jdl.pe/assets/images/brand-logos/desktop-white.png">
 
   <script type="application/ld+json">
     {
