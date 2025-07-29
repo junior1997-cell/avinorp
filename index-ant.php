@@ -27,7 +27,7 @@
   <meta property="og:title" content="Libreria sistema - Proveedor de Servicios de Internet en Perú">
   <meta property="og:description" content="Proveedor de servicios de internet de alta velocidad en Perú. Ofrecemos conexiones rápidas y confiables para hogares y empresas. ¡Contáctanos para obtener más información!">
   <meta property="og:image" content="assets/images/brand-logos/desktop-white.png">
-  <meta property="og:url" content="https://novedadesdys.jdl.pe">
+  <meta property="og:url" content="https://avinorp.jdl.pe">
   <!-- TWITTER -->
   <!-- <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@nombre_de_usuario_de_twitter"> -->
@@ -40,12 +40,12 @@
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "Libreria sistema",
-      "url": "https://novedadesdys.jdl.pe",
+      "url": "https://avinorp.jdl.pe",
       "description": "Proveedor de servicios de internet de alta velocidad en Perú. Ofrecemos conexiones rápidas y confiables para hogares y empresas. ¡Contáctanos para obtener más información!"
     }
   </script>
 
-  <link rel="canonical" href="https://novedadesdys.jdl.pe">
+  <link rel="canonical" href="https://avinorp.jdl.pe">
 
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="assets/images/brand-logos/ico-novedades-dys.png" >

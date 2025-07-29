@@ -311,7 +311,7 @@
                           <td style="font-size: 9px;">
                               <span>Autorizado mediante resolución Nro: 182-2016/SUNAT Representación impresa del comprobante de venta electrónico, puede ser consultada en:</span>
                               <span class="fw-bold">
-                                  <b>https://novedadesdys.jdl.pe</b>
+                                  <b>https://avinorp.jdl.pe</b>
                               </span>
                               <span style="font-size: 10px; margin-top: 5px;">Hash: '.$sunat_hash.'</span>
                           </td>
