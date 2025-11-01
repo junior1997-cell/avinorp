@@ -15,7 +15,9 @@ INSERT INTO `sucursal` (`idsucursal`, `nombre`, `codigo_sunat`, `igv`, `glosa_am
 
 
 
- -- Migracion version 2
+-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+-- Migracion version 2
+-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 
 UPDATE producto_presentacion AS pp
@@ -49,3 +51,59 @@ JOIN (
 ) AS sub
 ON pp.idproducto_presentacion = sub.idproducto_presentacion
 SET pp.precio_venta = sub.precio_venta, pp.precio_venta_total = sub.precio_venta * sub.cantidad;
+
+
+-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+-- ACTUALIZACION DE STOCK EN BASE AL ULTIMO BACK UP
+-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+SELECT ps.idproducto_sucursal, ps.stock as stock_hoy, pso.stock as  stock_anterior, 
+(pso.stock - vdp.cant_venta_hoy) stock_actual_calculado, vdp.cant_venta_hoy
+from producto_sucursal as ps 
+inner JOIN	producto_sucursal_old as pso on pso.idproducto_sucursal = ps.idproducto_sucursal
+inner JOIN (
+    SELECT pp.idproducto_sucursal, SUM(vd.cantidad_total) as cant_venta_hoy 
+    FROM venta_detalle as vd 
+    inner JOIN producto_presentacion as pp on pp.idproducto_presentacion = vd.idproducto_presentacion
+    where DATE_FORMAT(vd.v_fecha_emision, '%Y-%m-%d') in ('2025-07-22', '2025-07-23') and 
+    vd.v_tipo_comprobante = 'ORDEN DE VENTA'
+    GROUP BY pp.idproducto_sucursal
+) as vdp on vdp.idproducto_sucursal = ps.idproducto_sucursal
+
+
+-- actualiza solo a los que no se vendio
+UPDATE producto_sucursal AS pp
+INNER JOIN (
+    SELECT ps.idproducto_sucursal, pso.stock 
+    from producto_sucursal as ps 
+    inner JOIN	producto_sucursal_old as pso on pso.idproducto_sucursal = ps.idproducto_sucursal
+    left JOIN (
+        SELECT pp.idproducto_sucursal, SUM(vd.cantidad_total) as cantidad_total 
+        FROM venta_detalle as vd 
+        inner JOIN producto_presentacion as pp on pp.idproducto_presentacion = vd.idproducto_presentacion
+        where DATE_FORMAT(vd.v_fecha_emision, '%Y-%m-%d') in ('2025-07-22', '2025-07-23') and vd.v_tipo_comprobante = 'ORDEN DE VENTA'
+        GROUP BY pp.idproducto_sucursal
+    ) as vdp on vdp.idproducto_sucursal = ps.idproducto_sucursal
+    where vdp.idproducto_sucursal is null
+) AS sub
+ON pp.idproducto_sucursal = sub.idproducto_sucursal
+SET pp.stock = sub.stock;
+
+-- Actualizado solo a lo vendido
+UPDATE producto_sucursal AS pp
+INNER JOIN (
+    SELECT ps.idproducto_sucursal, ps.stock as stock_hoy, pso.stock as  stock_anterior, 
+    (pso.stock - vdp.cant_venta_hoy) stock_actual_calculado, vdp.cant_venta_hoy
+    from producto_sucursal as ps 
+    inner JOIN	producto_sucursal_old as pso on pso.idproducto_sucursal = ps.idproducto_sucursal
+    inner JOIN (
+        SELECT pp.idproducto_sucursal, SUM(vd.cantidad_total) as cant_venta_hoy 
+        FROM venta_detalle as vd 
+        inner JOIN producto_presentacion as pp on pp.idproducto_presentacion = vd.idproducto_presentacion
+        where DATE_FORMAT(vd.v_fecha_emision, '%Y-%m-%d') in ('2025-07-22', '2025-07-23') and 
+        vd.v_tipo_comprobante = 'ORDEN DE VENTA'
+        GROUP BY pp.idproducto_sucursal
+    ) as vdp on vdp.idproducto_sucursal = ps.idproducto_sucursal
+) AS sub
+ON pp.idproducto_sucursal = sub.idproducto_sucursal
+SET pp.stock = sub.stock_actual_calculado;

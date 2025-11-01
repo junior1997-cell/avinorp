@@ -8,10 +8,11 @@ p.user_created as pro_user_created, p.user_updated as pro_user_updated,
 -- Datos Presentacion
 pp.idproducto_presentacion, pp.idsunat_c03_unidad_medida, pp.nombre as nombre_presentacion, pp.cantidad as cantidad_presentacion,
 CASE WHEN  pp.nombre = 'UNIDADES' then p.nombre else CONCAT( p.nombre, ' - ',  pp.nombre) end as nombre_producto_presentacion,
+pp.estado as pp_estado,  pp.estado_delete as pp_estado_delete,
 -- Datos Unidad Medida
 um.nombre as unidad_medida, um.abreviatura,
 -- Datos Producto Sucursal
-ps.idsucursal, ps.stock_minimo, ps.precio_compra, pp.precio_venta, pp.precio_venta_total, ps.precio_por_mayor, ps.stock as stock_total, 
+ps.idproducto_sucursal, ps.idsucursal, ps.stock_minimo, ps.precio_compra, pp.precio_venta, pp.precio_venta_total, ps.precio_por_mayor, ps.stock as stock_total, 
 CASE WHEN ps.stock = 0 OR ps.stock IS NULL THEN 0 ELSE ROUND( (ps.stock / pp.cantidad), 2 ) END AS stock_presentacion,
 CASE WHEN ps.stock = 0 OR ps.stock IS NULL THEN 0 ELSE FLOOR( (ps.stock / pp.cantidad) ) END AS stock_presentacion_entero,
 -- Datos Sucursal
